@@ -21,10 +21,10 @@ fn first_line(s: &String) -> &str {
     s.lines().next().unwrap()
 }
 
-fn get_input(n: u8) -> String {
+fn get_input(n: u8) -> anyhow::Result<String> {
     let input_file = format!("inputs/{:02}.txt", n);
     if Path::new(&input_file).exists() {
-        read_to_string(input_file).unwrap()
+        Ok(read_to_string(input_file)?)
     } else {
         println!("Fetching input for day {}...", n);
         let input = Client::new()
@@ -38,23 +38,21 @@ fn get_input(n: u8) -> String {
                     )
                 ),
             )
-            .send()
-            .unwrap()
-            .text()
-            .unwrap();
+            .send()?
+            .text()?;
         assert_ne!(
             first_line(&input),
             "Puzzle inputs differ by user.  Please log in to get your puzzle input.",
             "session has expired"
         );
-        write(input_file, &input).unwrap();
-        input
+        write(input_file, &input)?;
+        Ok(input)
     }
 }
 
 fn run_day(days: &[fn(&str) -> u128], n: u8) -> u128 {
     assert!(n <= days.len() as u8, "day {} not found", n);
-    days[n as usize - 1](&get_input(n))
+    days[n as usize - 1](&get_input(n).unwrap())
 }
 
 fn day_from_input() -> Option<u8> {
