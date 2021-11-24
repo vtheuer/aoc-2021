@@ -34,8 +34,7 @@ fn get_input(n: u8) -> String {
                 format!(
                     "session={}",
                     first_line(
-                        &read_to_string(".session")
-                            .expect("please provide a session token in a file named .session")
+                        &read_to_string(".session").expect("please provide a session token in a file named .session")
                     )
                 ),
             )
@@ -76,11 +75,7 @@ fn main() {
             "\n{}",
             &format!(
                 "Total run time: {}",
-                format_duration(
-                    (1..=days.len() as u8)
-                        .map(|n| run_day(&days, n))
-                        .sum::<u128>()
-                )
+                format_duration((1..=days.len() as u8).map(|n| run_day(&days, n)).sum::<u128>())
             )
             .bold()
             .cyan()
