@@ -3,19 +3,59 @@
 extern crate macros;
 
 use std::env;
-use std::fs::{read_dir, read_to_string};
+use std::error::Error;
+use std::fs::{read_dir, read_to_string, write};
+use std::path::Path;
 
 use crate::day::Day;
 use crate::util::format_duration;
 use colored::*;
 use macros::days_vec;
+use reqwest::blocking::Client;
+use reqwest::header::COOKIE;
 
 mod day;
 mod util;
 
+fn first_line(s: &String) -> &str {
+    s.lines().next().unwrap()
+}
+
+fn get_input(n: u8) -> String {
+    let input_file = format!("inputs/{:02}.txt", n);
+    if Path::new(&input_file).exists() {
+        read_to_string(input_file).unwrap()
+    } else {
+        println!("Fetching input for day {}...", n);
+        let input = Client::new()
+            .get(format!("https://adventofcode.com/2021/day/{}/input", n))
+            .header(
+                COOKIE,
+                format!(
+                    "session={}",
+                    first_line(
+                        &read_to_string(".session")
+                            .expect("please provide a session token in a file named .session")
+                    )
+                ),
+            )
+            .send()
+            .unwrap()
+            .text()
+            .unwrap();
+        assert_ne!(
+            first_line(&input),
+            "Puzzle inputs differ by user.  Please log in to get your puzzle input.",
+            "session has expired"
+        );
+        write(input_file, &input).unwrap();
+        input
+    }
+}
+
 fn run_day(days: &[fn(&str) -> u128], n: u8) -> u128 {
     assert!(n <= days.len() as u8, "day {} not found", n);
-    days[n as usize - 1](&read_to_string(format!("inputs/{:02}.txt", n)).unwrap())
+    days[n as usize - 1](&get_input(n))
 }
 
 fn day_from_input() -> Option<u8> {

@@ -12,3 +12,4 @@ Cargo.lock
 # Other
 /.idea
 *.iml
+.session
