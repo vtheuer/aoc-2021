@@ -3,12 +3,14 @@ use std::error::Error;
 use std::fs::{create_dir_all, read_dir, read_to_string, write};
 use std::path::Path;
 
-use crate::day::Day;
-use crate::util::format_duration;
 use colored::*;
-use macros::days_vec;
 use reqwest::blocking::Client;
 use reqwest::header::COOKIE;
+
+use macros::days_vec;
+
+use crate::day::Day;
+use crate::util::format_duration;
 
 fn first_line(s: &String) -> &str {
     s.lines().next().unwrap()
@@ -24,8 +26,9 @@ impl Year {
         println!(
             "\n{}",
             &format!(
-                "Total run time for {}: {}",
+                "Total run time for {} ({}/24): {}",
                 self.year,
+                self.days.len(),
                 format_duration(
                     (1..=self.days.len() as u8)
                         .map(|n| self.run_day_by_number(n as usize))

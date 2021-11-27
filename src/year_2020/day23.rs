@@ -1,5 +1,6 @@
-use crate::day::Day;
 use itertools::Itertools;
+
+use crate::day::Day;
 
 pub struct Day23 {
     numbers: Vec<u8>,
@@ -21,19 +22,11 @@ fn play(initial: &Vec<u8>, cup_count: usize, turns: usize) -> impl Iterator<Item
             .collect::<Vec<_>>();
         let mut destination = current_value;
         while destination == current_value || pickup.contains(&destination) {
-            destination = if destination > min {
-                destination - 1
-            } else {
-                max
-            };
+            destination = if destination > min { destination - 1 } else { max };
         }
 
         for _ in 0..3 {
-            numbers.remove(if current < numbers.len() - 1 {
-                current + 1
-            } else {
-                0
-            });
+            numbers.remove(if current < numbers.len() - 1 { current + 1 } else { 0 });
         }
 
         let destination_index = numbers
@@ -84,7 +77,8 @@ impl Day<'_> for Day23 {
     }
 
     fn part_2(&self) -> Self::T2 {
-        play(&self.numbers, 1_000, 10_000);
-        "".to_string()
+        play(&self.numbers, 1_000, 10_000)
+            .map(|n| (b'0' + n as u8) as char)
+            .collect::<String>()
     }
 }

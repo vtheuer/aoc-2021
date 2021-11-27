@@ -17,10 +17,12 @@ mod day;
 mod util;
 mod year;
 mod year_2020;
+mod year_2021;
 
 fn make_years() -> FnvHashMap<u16, Year> {
     let mut years = FnvHashMap::default();
     years.insert(2020, year_2020::get());
+    years.insert(2021, year_2021::get());
     years
 }
 
