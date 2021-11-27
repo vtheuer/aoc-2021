@@ -2,7 +2,7 @@
 name = "aoc-2020"
 version = "0.1.0"
 authors = ["vtheuer"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 name = "macros"
