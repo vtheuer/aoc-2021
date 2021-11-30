@@ -10,6 +10,7 @@ use reqwest::header::COOKIE;
 use macros::days_vec;
 
 use crate::day::Day;
+use crate::parse_arg;
 use crate::util::format_duration;
 
 fn first_line(s: &String) -> &str {
@@ -29,11 +30,7 @@ impl Year {
                 "Total run time for {} ({}/24): {}",
                 self.year,
                 self.days.len(),
-                format_duration(
-                    (1..=self.days.len() as u8)
-                        .map(|n| self.run_day_by_number(n as usize))
-                        .sum()
-                )
+                format_duration((1..=self.days.len()).map(|n| self.run_day_by_number(n)).sum())
             )
             .bold()
             .cyan()
@@ -41,17 +38,9 @@ impl Year {
     }
 
     pub fn run_day(&self, d: &str) -> u128 {
-        let i = match d {
-            "last" => self.days.len(),
-            n => {
-                let i = n
-                    .parse()
-                    .unwrap_or_else(|_| panic!("day : expected either a number or \"last\", got {}", n));
-                assert!(i <= self.days.len(), "day {} not found", n);
-                i
-            }
-        };
-        self.run_day_by_number(i)
+        let day_number = parse_arg("day", d, || self.days.len());
+        assert!(day_number <= self.days.len(), "day {} not found", day_number);
+        self.run_day_by_number(day_number)
     }
 
     fn run_day_by_number(&self, n: usize) -> u128 {

@@ -3,11 +3,13 @@
 extern crate macros;
 
 use std::env;
+use std::str::FromStr;
 
 use colored::*;
 use fnv::FnvHashMap;
 
 use macros::days_vec;
+use util::parse_arg;
 
 use crate::day::Day;
 use crate::util::format_duration;
@@ -19,23 +21,15 @@ mod year;
 mod year_2020;
 mod year_2021;
 
-fn make_years() -> FnvHashMap<u16, Year> {
-    let mut years = FnvHashMap::default();
-    years.insert(2020, year_2020::get());
-    years.insert(2021, year_2021::get());
-    years
-}
-
 fn main() {
-    let years = make_years();
+    let years: Vec<(u16, fn() -> Year)> = vec![(2020, year_2020::get), (2021, year_2021::get)];
     let get_year = |y| {
-        let i = match y {
-            "last" => *years.keys().max().unwrap(),
-            n => n
-                .parse()
-                .unwrap_or_else(|_| panic!("year : expected either a number or \"last\", got {}", n)),
-        };
-        years.get(&i).unwrap_or_else(|| panic!("year {} not found", y))
+        let year_number = parse_arg("year", y, || years.iter().last().unwrap().0);
+        years
+            .iter()
+            .find(|(y, _)| *y == year_number)
+            .unwrap_or_else(|| panic!("year {} not found", y))
+            .1()
     };
 
     match &env::args().skip(1).collect::<Vec<_>>()[..] {
@@ -47,7 +41,7 @@ fn main() {
         }
         [] => {
             for (_, year) in years {
-                year.run()
+                year().run()
             }
         }
         _ => panic!("Usage: aoc [YEAR] [DAY]"),
