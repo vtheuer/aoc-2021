@@ -4,7 +4,7 @@ pub struct Day08<'a> {
     instructions: Vec<(&'a str, isize)>,
 }
 
-fn run(instructions: &Vec<(&str, isize)>) -> (bool, isize) {
+fn run(instructions: &[(&str, isize)]) -> (bool, isize) {
     let mut pointer = 0;
     let mut accumulator = 0;
     let mut visited = (0..instructions.len()).map(|_| false).collect::<Vec<_>>();

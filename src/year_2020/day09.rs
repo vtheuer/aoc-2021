@@ -29,8 +29,7 @@ impl Day<'_> for Day09 {
                     .iter()
                     .enumerate()
                     .flat_map(|(i, a)| previous.iter().skip(i + 1).map(move |b| *a + *b))
-                    .find(|m| *m == *n)
-                    .is_none()
+                    .any(|m| m == *n)
             })
             .unwrap()
             .1;

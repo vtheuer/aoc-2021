@@ -18,12 +18,7 @@ impl<'a> Day<'a> for Day02<'a> {
                     let (range, c) = split_pair(rule, " ")?;
                     let (min, max) = split_pair(range, "-")?;
 
-                    Some((
-                        min.parse().ok()?,
-                        max.parse().ok()?,
-                        c.chars().nth(0)?,
-                        password,
-                    ))
+                    Some((min.parse().ok()?, max.parse().ok()?, c.chars().next()?, password))
                 })
                 .map(Option::unwrap)
                 .collect(),

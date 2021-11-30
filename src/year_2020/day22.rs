@@ -42,8 +42,8 @@ fn recursive_combat(mut a: VecDeque<u8>, mut b: VecDeque<u8>) -> (bool, VecDeque
 
             let a_wins = if a.len() >= a_card as usize && b.len() >= b_card as usize {
                 recursive_combat(
-                    a.iter().take(a_card as usize).map(|&card| card).collect(),
-                    b.iter().take(b_card as usize).map(|&card| card).collect(),
+                    a.iter().take(a_card as usize).copied().collect(),
+                    b.iter().take(b_card as usize).copied().collect(),
                 )
                 .0
             } else {

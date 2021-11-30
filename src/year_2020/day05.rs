@@ -22,7 +22,7 @@ impl Day<'_> for Day05 {
                 })
             })
             .collect::<Vec<_>>();
-        seats.sort();
+        seats.sort_unstable();
         Day05 { seats }
     }
 

@@ -24,15 +24,11 @@ fn format_row(k: &str, v: &str, left: usize, right: usize, header: bool) -> Stri
         },
         " ".repeat(left - char_count(k)),
         " ".repeat(right - char_count(v)),
-        if header {
-            v.bold()
-        } else {
-            ColoredString::from(v)
-        }
+        if header { v.bold() } else { ColoredString::from(v) }
     )
 }
 
-fn print_table((hk, hv): (&str, &str), rows: &Vec<(&str, &str)>) {
+fn print_table((hk, hv): (&str, &str), rows: &[(&str, &str)]) {
     let left = 24.max(rows.iter().map(|(k, _)| char_count(k)).max().unwrap());
     let right = 7.max(rows.iter().map(|(_, v)| char_count(v)).max().unwrap());
 
@@ -40,7 +36,7 @@ fn print_table((hk, hv): (&str, &str), rows: &Vec<(&str, &str)>) {
         "┌{}┬{}┐\n{}\n├{0}┼{1}┤\n{}\n└{0}┴{1}┘",
         "─".repeat(left + 2),
         "─".repeat(right + 2),
-        format_row(&hk, &hv, left, right, true),
+        format_row(hk, hv, left, right, true),
         rows.iter()
             .map(|(k, v)| format_row(k, v, left, right, false))
             .join("\n")
@@ -65,16 +61,10 @@ pub trait Day<'a>: Sized {
 
         print_table(
             (&format!("Day {}", n), &format_duration(total)),
-            &vec![
+            &[
                 ("Parse  :", &format_duration(parse_duration)),
-                (
-                    &format!("Part 1 : {}", output_1),
-                    &format_duration(part_1_duration),
-                ),
-                (
-                    &format!("Part 2 : {}", output_2),
-                    &format_duration(part_2_duration),
-                ),
+                (&format!("Part 1 : {}", output_1), &format_duration(part_1_duration)),
+                (&format!("Part 2 : {}", output_2), &format_duration(part_2_duration)),
             ],
         );
 

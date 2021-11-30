@@ -13,7 +13,7 @@ use crate::day::Day;
 use crate::parse_arg;
 use crate::util::format_duration;
 
-fn first_line(s: &String) -> &str {
+fn first_line(s: &str) -> &str {
     s.lines().next().unwrap()
 }
 

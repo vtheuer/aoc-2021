@@ -6,13 +6,13 @@ pub struct Day23 {
     numbers: Vec<u8>,
 }
 
-fn play(initial: &Vec<u8>, cup_count: usize, turns: usize) -> impl Iterator<Item = usize> {
+fn play(initial: &[u8], cup_count: usize, turns: usize) -> impl Iterator<Item = usize> {
     let mut numbers = (0..cup_count).collect::<Vec<_>>();
     for (i, &n) in initial.iter().enumerate() {
         numbers[i] = n as usize;
     }
-    let min = numbers.iter().map(|&n| n).min().unwrap();
-    let max = numbers.iter().map(|&n| n).max().unwrap();
+    let min = numbers.iter().copied().min().unwrap();
+    let max = numbers.iter().copied().max().unwrap();
     let mut current = 0;
     for _ in 0..turns {
         let current_value = numbers[current];
@@ -34,7 +34,7 @@ fn play(initial: &Vec<u8>, cup_count: usize, turns: usize) -> impl Iterator<Item
             .enumerate()
             .find(|&(_, &n)| n == destination)
             .map(|(i, _)| i)
-            .expect(&format!("{} not found in {:?}", destination, numbers));
+            .unwrap_or_else(|| panic!("{} not found in {:?}", destination, numbers));
         for (i, n) in pickup.into_iter().enumerate() {
             numbers.insert(destination_index + i + 1, n);
         }

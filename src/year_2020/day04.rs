@@ -20,14 +20,7 @@ impl<'a> Day<'a> for Day04<'a> {
                         .filter_map(|pair| split_pair(pair, ":"))
                         .collect::<Vec<_>>()
                 })
-                .filter(|pairs| {
-                    pairs.len()
-                        >= pairs
-                            .iter()
-                            .find(|(k, _)| *k == "cid")
-                            .and(Some(8))
-                            .unwrap_or(7)
-                })
+                .filter(|pairs| pairs.len() >= pairs.iter().find(|(k, _)| *k == "cid").and(Some(8)).unwrap_or(7))
                 .collect(),
         }
     }
@@ -44,32 +37,19 @@ impl<'a> Day<'a> for Day04<'a> {
             .iter()
             .filter(|pairs| {
                 pairs.iter().all(|(k, v)| match *k {
-                    "byr" => v
-                        .parse::<u32>()
-                        .map(|y| y >= 1920 && y <= 2002)
-                        .unwrap_or(false),
-                    "iyr" => v
-                        .parse::<u32>()
-                        .map(|y| y >= 2010 && y <= 2020)
-                        .unwrap_or(false),
-                    "eyr" => v
-                        .parse::<u32>()
-                        .map(|y| y >= 2020 && y <= 2030)
-                        .unwrap_or(false),
+                    "byr" => v.parse::<u32>().map(|y| (1920..=2002).contains(&y)).unwrap_or(false),
+                    "iyr" => v.parse::<u32>().map(|y| (2010..=2020).contains(&y)).unwrap_or(false),
+                    "eyr" => v.parse::<u32>().map(|y| (2020..=2030).contains(&y)).unwrap_or(false),
                     "hgt" => Some(v)
                         .map(|s| (&s[..s.len() - 2], &s[s.len() - 2..]))
                         .and_then(|(h, u)| Some((h.parse::<u32>().ok()?, u)))
                         .filter(|&(h, u)| match u {
-                            "cm" => h >= 150 && h <= 193,
-                            "in" => h >= 59 && h <= 76,
+                            "cm" => (150..=193).contains(&h),
+                            "in" => (59..=76).contains(&h),
                             _ => false,
                         })
                         .is_some(),
-                    "hcl" => {
-                        v.len() == 7
-                            && v.chars().nth(0) == Some('#')
-                            && v.chars().skip(1).all(|c| c.is_ascii_hexdigit())
-                    }
+                    "hcl" => v.len() == 7 && v.starts_with('#') && v.chars().skip(1).all(|c| c.is_ascii_hexdigit()),
                     "ecl" => eye_colors.contains(v),
                     "pid" => v.len() == 9 && v.chars().all(|c| c.is_digit(10)),
                     "cid" => true,

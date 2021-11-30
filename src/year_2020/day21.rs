@@ -41,25 +41,19 @@ impl<'a> Day<'a> for Day21<'a> {
                                 if common.is_empty() {
                                     ingredients.clone()
                                 } else {
-                                    common.intersection(ingredients).map(|&i| i).collect()
+                                    common.intersection(ingredients).copied().collect()
                                 }
                             }),
                     )
                 })
                 .sorted_by_key(|(_, possible_ingredients)| possible_ingredients.len())
-                .fold(
-                    FnvHashMap::default(),
-                    |mut r, (allergen, possible_ingredients)| {
-                        r.insert(
-                            possible_ingredients
-                                .into_iter()
-                                .find(|i| !r.contains_key(i))
-                                .unwrap(),
-                            allergen,
-                        );
-                        r
-                    },
-                ),
+                .fold(FnvHashMap::default(), |mut r, (allergen, possible_ingredients)| {
+                    r.insert(
+                        possible_ingredients.into_iter().find(|i| !r.contains_key(i)).unwrap(),
+                        allergen,
+                    );
+                    r
+                }),
             recipes,
         }
     }

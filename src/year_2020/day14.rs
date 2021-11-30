@@ -15,11 +15,11 @@ pub struct Day14 {
 }
 
 fn get(value: usize, i: usize) -> bool {
-    value & (1 << 35 - i) != 0
+    value & (1 << (35 - i)) != 0
 }
 
 fn set(value: usize, i: usize, bit: bool) -> usize {
-    let mask = 1 << 35 - i;
+    let mask = 1 << (35 - i);
     if bit {
         value | mask
     } else {
@@ -27,24 +27,23 @@ fn set(value: usize, i: usize, bit: bool) -> usize {
     }
 }
 
-fn addresses(mask: &Vec<Option<bool>>, address: usize) -> Vec<usize> {
-    let (mut addresses, last_part) =
-        mask.iter()
-            .enumerate()
-            .fold((vec![0], 0), |(addresses, part), (i, &b)| match b {
-                Some(bit) => (addresses, set(part, i, bit || get(address, i))),
-                None => (
-                    addresses.iter().fold(
-                        Vec::with_capacity(addresses.len() * 2),
-                        |mut addresses, &address| {
-                            addresses.push(set(address | part, i, false));
-                            addresses.push(set(address | part, i, true));
-                            addresses
-                        },
-                    ),
-                    0,
-                ),
-            });
+fn addresses(mask: &[Option<bool>], address: usize) -> Vec<usize> {
+    let (mut addresses, last_part) = mask
+        .iter()
+        .enumerate()
+        .fold((vec![0], 0), |(addresses, part), (i, &b)| match b {
+            Some(bit) => (addresses, set(part, i, bit || get(address, i))),
+            None => (
+                addresses
+                    .iter()
+                    .fold(Vec::with_capacity(addresses.len() * 2), |mut addresses, &address| {
+                        addresses.push(set(address | part, i, false));
+                        addresses.push(set(address | part, i, true));
+                        addresses
+                    }),
+                0,
+            ),
+        });
 
     if last_part > 0 {
         for address in addresses.iter_mut() {
@@ -119,13 +118,11 @@ impl Day<'_> for Day14 {
             .fold(
                 (FnvHashMap::default(), &vec![]),
                 |(mut memory, mask), instruction| match instruction {
-                    Mask(m) => (memory, &m),
+                    Mask(m) => (memory, m),
                     Mem(address, value) => {
-                        addresses(mask, *address)
-                            .into_iter()
-                            .for_each(|masked_address| {
-                                memory.insert(masked_address, *value);
-                            });
+                        addresses(mask, *address).into_iter().for_each(|masked_address| {
+                            memory.insert(masked_address, *value);
+                        });
 
                         (memory, mask)
                     }

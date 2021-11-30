@@ -3,18 +3,17 @@ use crate::util::split_pair;
 use fnv::FnvHashSet;
 use std::cell::Cell;
 
+type Constraint<'a> = (&'a str, (usize, usize), (usize, usize));
+
 pub struct Day16<'a> {
-    constraints: Vec<(&'a str, (usize, usize), (usize, usize))>,
+    constraints: Vec<Constraint<'a>>,
     my_ticket: Vec<usize>,
     other_tickets: Vec<Vec<usize>>,
     valid_tickets: Cell<Vec<usize>>,
 }
 
 fn parse_ticket(line: &str) -> Vec<usize> {
-    line.split(',')
-        .map(str::parse)
-        .map(Result::unwrap)
-        .collect()
+    line.split(',').map(str::parse).map(Result::unwrap).collect()
 }
 
 fn parse(input: &str) -> Option<Day16> {
@@ -91,9 +90,9 @@ impl<'a> Day<'a> for Day16<'a> {
                     field,
                     (0..ticket_length)
                         .filter(|&i| {
-                            valid_tickets.iter().all(|&ticket| {
-                                is_valid(self.other_tickets[ticket][i], range1, range2)
-                            })
+                            valid_tickets
+                                .iter()
+                                .all(|&ticket| is_valid(self.other_tickets[ticket][i], range1, range2))
                         })
                         .collect::<Vec<_>>(),
                 )

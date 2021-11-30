@@ -15,7 +15,7 @@ pub struct Day19<'a> {
     messages: Vec<&'a str>,
 }
 
-fn matches_branch(rules: &[Rule], sub: &Vec<usize>, message: &str, n: usize) -> (bool, usize) {
+fn matches_branch(rules: &[Rule], sub: &[usize], message: &str, n: usize) -> (bool, usize) {
     let mut matches = true;
     let mut i = 0;
     let mut it = sub.iter().peekable();
@@ -40,7 +40,7 @@ fn format_rule(rules: &[Rule], i: usize) -> String {
                 a.iter().join(" "),
                 b.as_ref()
                     .map(|b| format!(" | {}", b.iter().join(" ")))
-                    .unwrap_or(String::new())
+                    .unwrap_or_default()
             ),
         }
     )
@@ -54,12 +54,12 @@ fn matches_rule(rules: &[Rule], rule_index: usize, message: &str, n: usize) -> (
             .map(|c| (c == *expected, 1))
             .unwrap_or((false, 0)),
         Composite((a, b)) => {
-            let (matches, i) = matches_branch(rules, &a, message, n);
+            let (matches, i) = matches_branch(rules, a, message, n);
             if matches {
                 (true, i)
             } else {
                 b.as_ref()
-                    .map(|br| matches_branch(rules, &br, message, n))
+                    .map(|br| matches_branch(rules, br, message, n))
                     .unwrap_or((false, 0))
             }
         }
@@ -67,7 +67,7 @@ fn matches_rule(rules: &[Rule], rule_index: usize, message: &str, n: usize) -> (
     println!(
         "{}{} - {} {}",
         "└".repeat(n),
-        format_rule(&rules, rule_index),
+        format_rule(rules, rule_index),
         message,
         if m { '✔' } else { '✗' }
     );

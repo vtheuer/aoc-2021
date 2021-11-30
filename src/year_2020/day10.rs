@@ -9,23 +9,17 @@ impl Day<'_> for Day10 {
     type T2 = u64;
 
     fn new(input: &str) -> Self {
-        let mut numbers = input
-            .lines()
-            .map(|l| l.parse().unwrap())
-            .collect::<Vec<_>>();
-        numbers.sort();
+        let mut numbers = input.lines().map(|l| l.parse().unwrap()).collect::<Vec<_>>();
+        numbers.sort_unstable();
         Day10 { numbers }
     }
 
     fn part_1(&self) -> Self::T1 {
-        let (n1, n3) = self
-            .numbers
-            .windows(2)
-            .fold((1, 1), |(n1, n3), w| match w[1] - w[0] {
-                1 => (n1 + 1, n3),
-                3 => (n1, n3 + 1),
-                n => unreachable!("unexpected difference {}", n),
-            });
+        let (n1, n3) = self.numbers.windows(2).fold((1, 1), |(n1, n3), w| match w[1] - w[0] {
+            1 => (n1 + 1, n3),
+            3 => (n1, n3 + 1),
+            n => unreachable!("unexpected difference {}", n),
+        });
         n1 * n3
     }
 

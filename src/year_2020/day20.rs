@@ -84,23 +84,17 @@ fn borders_match((a, _): (u16, u16), (b, br): (u16, u16)) -> Option<bool> {
 // i j k l    o k g c
 // m n o p    p l h d
 
-fn rotate(pixels: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
+fn rotate(pixels: &[Vec<bool>]) -> Vec<Vec<bool>> {
     (0..TILE_SIZE)
-        .map(|y| {
-            (0..TILE_SIZE)
-                .map(|x| pixels[TILE_SIZE - 1 - x][y])
-                .collect()
-        })
+        .map(|y| (0..TILE_SIZE).map(|x| pixels[TILE_SIZE - 1 - x][y]).collect())
         .collect()
 }
 
-fn flipv(pixels: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
-    (0..TILE_SIZE)
-        .map(|y| pixels[TILE_SIZE - 1 - y].clone())
-        .collect()
+fn flipv(pixels: &[Vec<bool>]) -> Vec<Vec<bool>> {
+    (0..TILE_SIZE).map(|y| pixels[TILE_SIZE - 1 - y].clone()).collect()
 }
 
-fn fliph(pixels: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
+fn fliph(pixels: &[Vec<bool>]) -> Vec<Vec<bool>> {
     (0..TILE_SIZE)
         .map(|y| {
             let mut row = pixels[y].clone();
@@ -110,14 +104,11 @@ fn fliph(pixels: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
         .collect()
 }
 
-fn get_border(pixels: &Vec<Vec<bool>>, side: Side) -> Vec<bool> {
+fn get_border(pixels: &[Vec<bool>], side: Side) -> Vec<bool> {
     match side {
         Top => pixels[0].clone(),
-        Right => pixels
-            .iter()
-            .map(|row| row[TILE_SIZE - 1])
-            .collect::<Vec<_>>(),
-        Bottom => pixels[TILE_SIZE - 1].iter().map(|&p| p).collect::<Vec<_>>(),
+        Right => pixels.iter().map(|row| row[TILE_SIZE - 1]).collect::<Vec<_>>(),
+        Bottom => pixels[TILE_SIZE - 1].iter().copied().collect::<Vec<_>>(),
         Left => pixels.iter().map(|row| row[0]).collect::<Vec<_>>(),
     }
 }
@@ -160,11 +151,7 @@ impl Tile {
     fn get_border(&self, side: Side) -> Vec<bool> {
         match side {
             Top => self.pixels[0].clone(),
-            Right => self
-                .pixels
-                .iter()
-                .map(|row| row[TILE_SIZE - 1])
-                .collect::<Vec<_>>(),
+            Right => self.pixels.iter().map(|row| row[TILE_SIZE - 1]).collect::<Vec<_>>(),
             Bottom => self.pixels[TILE_SIZE - 1].clone(),
             Left => self.pixels.iter().map(|row| row[0]).collect::<Vec<_>>(),
         }
@@ -194,16 +181,12 @@ pub struct Day20 {
     // matches: FnvHashMap<usize, FnvHashMap<Side, (usize, Side, bool)>>,
 }
 
-fn format_tile(pixels: &Vec<Vec<bool>>) -> String {
+fn format_tile(pixels: &[Vec<bool>]) -> String {
     format!(
         "{}\n",
         pixels
             .iter()
-            .map(|row| {
-                row.iter()
-                    .map(|p| if *p { '#' } else { '.' })
-                    .collect::<String>()
-            })
+            .map(|row| { row.iter().map(|p| if *p { '#' } else { '.' }).collect::<String>() })
             .join("\n")
     )
 }
@@ -215,10 +198,7 @@ impl Day20 {
 }
 
 fn print_r(r: &FnvHashMap<usize, ((i8, i8), u8, bool)>) {
-    let positions = r
-        .iter()
-        .map(|(&i, &(p, _, _))| (p, i))
-        .collect::<FnvHashMap<_, _>>();
+    let positions = r.iter().map(|(&i, &(p, _, _))| (p, i)).collect::<FnvHashMap<_, _>>();
     let min_x = positions.keys().map(|&(x, _)| x).min().unwrap();
     let max_x = positions.keys().map(|&(x, _)| x).max().unwrap();
     let min_y = positions.keys().map(|&(_, y)| y).min().unwrap();
@@ -274,7 +254,7 @@ impl Day<'_> for Day20 {
     fn part_1(&self) -> Self::T1 {
         let mut r = FnvHashMap::default();
         r.insert(0, ((0, 0), 0, false));
-        let mut to_find = vec![(0 as usize, Top), (0, Right), (0, Bottom), (0, Left)];
+        let mut to_find = vec![(0, Top), (0, Right), (0, Bottom), (0, Left)];
 
         while !to_find.is_empty() {
             let (index, side_to_match) = to_find.pop().unwrap();

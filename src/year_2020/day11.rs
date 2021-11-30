@@ -11,12 +11,7 @@ impl Day11 {
         x >= 0 && x < self.width && y >= 0 && y < self.height
     }
 
-    fn find_seat(
-        &self,
-        seats: &Vec<Vec<Option<bool>>>,
-        (px, py): (isize, isize),
-        (dx, dy): (isize, isize),
-    ) -> bool {
+    fn find_seat(&self, seats: &[Vec<Option<bool>>], (px, py): (isize, isize), (dx, dy): (isize, isize)) -> bool {
         let (mut x, mut y) = (px + dx, py + dy);
 
         while self.is_valid(x, y) && seats[y as usize][x as usize].is_none() {
@@ -71,16 +66,7 @@ impl Day11 {
     }
 }
 
-const NEIGHBOURS: [(isize, isize); 8] = [
-    (-1, -1),
-    (-1, 0),
-    (-1, 1),
-    (0, -1),
-    (0, 1),
-    (1, -1),
-    (1, 0),
-    (1, 1),
-];
+const NEIGHBOURS: [(isize, isize); 8] = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)];
 
 impl Day<'_> for Day11 {
     type T1 = usize;
@@ -89,19 +75,11 @@ impl Day<'_> for Day11 {
     fn new(input: &str) -> Self {
         let seats = input
             .lines()
-            .map(|l| {
-                l.bytes()
-                    .map(|b| if b == b'L' { Some(false) } else { None })
-                    .collect()
-            })
+            .map(|l| l.bytes().map(|b| if b == b'L' { Some(false) } else { None }).collect())
             .collect::<Vec<Vec<_>>>();
         let width = seats[0].len() as isize;
         let height = seats.len() as isize;
-        Day11 {
-            seats,
-            width,
-            height,
-        }
+        Day11 { seats, width, height }
     }
 
     fn part_1(&self) -> Self::T1 {

@@ -18,8 +18,8 @@ pub struct Day18 {
 
 fn apply_op(op_stack: &mut Vec<&Token>, num_stack: &mut Vec<usize>) {
     let r = match op_stack.pop().unwrap() {
-        &Plus => usize::add,
-        &Times => usize::mul,
+        Plus => usize::add,
+        Times => usize::mul,
         _ => unreachable!(),
     }(num_stack.pop().unwrap(), num_stack.pop().unwrap());
     num_stack.push(r);
@@ -84,16 +84,10 @@ impl Day<'_> for Day18 {
     }
 
     fn part_1(&self) -> Self::T1 {
-        self.problems
-            .iter()
-            .map(|problem| eval(problem, false))
-            .sum::<usize>()
+        self.problems.iter().map(|problem| eval(problem, false)).sum::<usize>()
     }
 
     fn part_2(&self) -> Self::T2 {
-        self.problems
-            .iter()
-            .map(|problem| eval(problem, true))
-            .sum::<usize>()
+        self.problems.iter().map(|problem| eval(problem, true)).sum::<usize>()
     }
 }

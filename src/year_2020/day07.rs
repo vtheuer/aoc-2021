@@ -11,25 +11,21 @@ impl Day07<'_> {
         self.rules
             .get(container)
             .unwrap()
-            .into_iter()
+            .iter()
             .map(|(bag, count)| *count * (1 + self.count_bags_in(bag)))
             .sum()
     }
 }
 
-fn bags_containing<'a>(
-    containers_by_bag: &FnvHashMap<&str, Vec<&'a str>>,
-    bag: &str,
-) -> FnvHashSet<&'a str> {
+fn bags_containing<'a>(containers_by_bag: &FnvHashMap<&str, Vec<&'a str>>, bag: &str) -> FnvHashSet<&'a str> {
     containers_by_bag
         .get(bag)
         .map(|bags| {
-            bags.into_iter()
-                .fold(FnvHashSet::default(), |mut containers, container| {
-                    containers.insert(*container);
-                    containers.extend(bags_containing(containers_by_bag, container));
-                    containers
-                })
+            bags.iter().fold(FnvHashSet::default(), |mut containers, container| {
+                containers.insert(*container);
+                containers.extend(bags_containing(containers_by_bag, container));
+                containers
+            })
         })
         .unwrap_or_else(FnvHashSet::default)
 }
@@ -67,19 +63,11 @@ impl<'a> Day<'a> for Day07<'a> {
             &self
                 .rules
                 .iter()
-                .flat_map(|(container, content)| {
-                    content.into_iter().map(move |(bag, _)| (*bag, *container))
-                })
-                .fold(
-                    FnvHashMap::default(),
-                    |mut containers_by_bag, (bag, container)| {
-                        containers_by_bag
-                            .entry(bag)
-                            .or_insert(Vec::new())
-                            .push(container);
-                        containers_by_bag
-                    },
-                ),
+                .flat_map(|(container, content)| content.iter().map(move |(bag, _)| (*bag, *container)))
+                .fold(FnvHashMap::default(), |mut containers_by_bag, (bag, container)| {
+                    containers_by_bag.entry(bag).or_insert_with(Vec::new).push(container);
+                    containers_by_bag
+                }),
             "shiny gold",
         )
         .len()
