@@ -1,7 +1,6 @@
 use crate::day::Day;
-use crate::util::split_pair;
+use crate::util::{split_pair, Joinable, SortableByKey};
 use fnv::{FnvHashMap, FnvHashSet};
-use itertools::Itertools;
 
 pub struct Day21<'a> {
     recipes: Vec<(FnvHashSet<&'a str>, FnvHashSet<&'a str>)>,
@@ -46,7 +45,7 @@ impl<'a> Day<'a> for Day21<'a> {
                             }),
                     )
                 })
-                .sorted_by_key(|(_, possible_ingredients)| possible_ingredients.len())
+                .sorted_unstable_by_key(|(_, possible_ingredients)| possible_ingredients.len())
                 .fold(FnvHashMap::default(), |mut r, (allergen, possible_ingredients)| {
                     r.insert(
                         possible_ingredients.into_iter().find(|i| !r.contains_key(i)).unwrap(),
@@ -75,7 +74,7 @@ impl<'a> Day<'a> for Day21<'a> {
     fn part_2(&self) -> Self::T2 {
         self.allergenic_ingredients
             .iter()
-            .sorted_by_key(|&(_, &allergen)| allergen)
+            .sorted_unstable_by_key(|&(_, &allergen)| allergen)
             .map(|(&ingredient, _)| ingredient)
             .join(",")
     }

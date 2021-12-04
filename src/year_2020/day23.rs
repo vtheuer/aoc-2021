@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::day::Day;
 
 pub struct Day23 {

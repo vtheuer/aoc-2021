@@ -1,6 +1,5 @@
 use crate::day::Day;
-use crate::util::split_pair;
-use itertools::Itertools;
+use crate::util::{split_pair, Joinable};
 
 #[derive(Debug, Clone)]
 enum Rule {
@@ -37,7 +36,7 @@ fn format_rule(rules: &[Rule], i: usize) -> String {
             Char(c) => String::from(*c as char),
             Composite((a, b)) => format!(
                 "{}{}",
-                a.iter().join(" "),
+                a.iter().map(|n| n.to_string()).collect::<Vec<_>>().join(" "),
                 b.as_ref()
                     .map(|b| format!(" | {}", b.iter().join(" ")))
                     .unwrap_or_default()

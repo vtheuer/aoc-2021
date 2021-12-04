@@ -1,4 +1,6 @@
+use std::fmt::Display;
 use std::str::FromStr;
+use std::vec::IntoIter;
 
 pub fn split_pair<'a>(input: &'a str, p: &str) -> Option<(&'a str, &'a str)> {
     let mut s = input.splitn(2, p);
@@ -30,4 +32,41 @@ pub fn parse_arg<T: FromStr, F: FnOnce() -> T>(arg_name: &str, arg: &str, get_la
         n => n.parse(),
     }
     .unwrap_or_else(|_| panic!("{} : expected either a number or \"last\", got {}", arg_name, arg))
+}
+
+pub trait SortableByKey<T, I> {
+    fn sorted_unstable_by_key<K, F>(self, f: F) -> IntoIter<T>
+    where
+        F: FnMut(&T) -> K,
+        K: Ord;
+}
+
+impl<T, I> SortableByKey<T, I> for I
+where
+    T: Sized,
+    I: Iterator<Item = T>,
+{
+    fn sorted_unstable_by_key<K, F>(self, f: F) -> IntoIter<T>
+    where
+        F: FnMut(&T) -> K,
+        K: Ord,
+    {
+        let mut v = Vec::from_iter(self);
+        v.sort_unstable_by_key(f);
+        v.into_iter()
+    }
+}
+
+pub trait Joinable {
+    fn join(self, sep: &str) -> String;
+}
+
+impl<T, I> Joinable for I
+where
+    T: Display,
+    I: Iterator<Item = T>,
+{
+    fn join(self, sep: &str) -> String {
+        self.map(|e| e.to_string()).collect::<Vec<_>>().join(sep)
+    }
 }

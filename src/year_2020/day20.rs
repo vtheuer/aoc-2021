@@ -1,7 +1,7 @@
 use fnv::{FnvHashMap, FnvHashSet};
 
 use crate::day::Day;
-use itertools::Itertools;
+use crate::util::Joinable;
 use Side::*;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]

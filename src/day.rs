@@ -1,8 +1,8 @@
 use std::time::Instant;
 
 use crate::util::format_duration;
+use crate::util::Joinable;
 use colored::*;
-use itertools::Itertools;
 use std::fmt::Display;
 
 fn time<T, F: Fn() -> T>(f: F) -> (T, u128) {
