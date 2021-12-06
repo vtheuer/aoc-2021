@@ -25,11 +25,13 @@ impl Board {
 
     fn play_and_wins(&self, n: usize) -> bool {
         if let Some(c) = self.grid.iter().find_map(|row| row.iter().find(|c| c.get().0 == n)) {
-            c.set((n, true))
-        };
+            c.set((n, true));
 
-        self.grid.iter().any(|row| row.iter().all(|c| c.get().1))
-            || (0..self.grid[0].len()).any(|i| self.grid.iter().all(|row| row[i].get().1))
+            self.grid.iter().any(|row| row.iter().all(|c| c.get().1))
+                || (0..self.grid[0].len()).any(|i| self.grid.iter().all(|row| row[i].get().1))
+        } else {
+            false
+        }
     }
 
     fn score(&self, n: usize) -> usize {
