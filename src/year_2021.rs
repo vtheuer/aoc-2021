@@ -1,3 +1,8 @@
+use macros::days_vec;
+
+use crate::day::Day;
+use crate::year::Year;
+
 mod day01;
 mod day02;
 mod day03;
@@ -15,15 +20,13 @@ mod day14;
 mod day15;
 mod day16;
 mod day17;
-
-use macros::days_vec;
-
-use crate::day::Day;
-use crate::year::Year;
+mod day18;
+mod day19;
+mod day20;
 
 pub fn get() -> Year {
     Year {
         year: 2021,
-        days: days_vec!(17),
+        days: days_vec!(20),
     }
 }
