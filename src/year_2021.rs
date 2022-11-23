@@ -24,10 +24,12 @@ mod day18;
 mod day19;
 mod day20;
 mod day21;
+mod day22;
+mod day23;
 
 pub fn get() -> Year {
     Year {
         year: 2021,
-        days: days_vec!(21),
+        days: days_vec!(23),
     }
 }
