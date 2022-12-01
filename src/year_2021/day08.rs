@@ -40,7 +40,7 @@ fn segments_to_digit(segments: u8) -> usize {
             }
         }
         7 => 8,
-        _ => unreachable!(segments),
+        _ => unreachable!("{}", &segments),
     }
 }
 

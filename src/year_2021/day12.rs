@@ -25,7 +25,7 @@ fn find_index(caves: &[&str], cave: &str) -> usize {
             Greater => r = m - 1,
         }
     }
-    unreachable!(cave)
+    unreachable!("{}", cave)
 }
 
 fn add(bit_set: u16, bit: usize) -> u16 {

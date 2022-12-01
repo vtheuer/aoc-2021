@@ -18,7 +18,7 @@ fn check(line: &str) -> Result<VecDeque<u8>, u8> {
                             b']' => b'[',
                             b'}' => b'{',
                             b'>' => b'<',
-                            _ => unreachable!(c),
+                            _ => unreachable!("{}", c),
                         })
                     {
                         return Err(c);
@@ -47,7 +47,7 @@ impl<'a> Day<'a> for Day10<'a> {
                 b']' => 57,
                 b'}' => 1197,
                 b'>' => 25137,
-                _ => unreachable!(c),
+                _ => unreachable!("{}", c),
             })
             .sum::<usize>()
     }
@@ -67,7 +67,7 @@ impl<'a> Day<'a> for Day10<'a> {
                         b'[' => 2,
                         b'{' => 3,
                         b'<' => 4,
-                        _ => unreachable!(c as char),
+                        _ => unreachable!("{}", c as char),
                     })
                     .fold(0, |score, s| score * 5 + s)
             })

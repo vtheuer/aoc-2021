@@ -18,7 +18,7 @@ fn run(instructions: &[(&str, isize)]) -> (bool, isize) {
             }
             ("jmp", n) => pointer = (pointer as isize + n) as usize,
             ("nop", _) => pointer += 1,
-            (op, n) => unreachable!(&format!("unknown op: {} {}", op, n)),
+            (op, n) => unreachable!("unknown op: {} {}", op, n),
         }
     }
 
