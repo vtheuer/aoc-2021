@@ -20,9 +20,10 @@ mod util;
 mod year;
 mod year_2020;
 mod year_2021;
+mod year_2022;
 
 fn main() {
-    let years: Vec<(u16, fn() -> Year)> = vec![(2020, year_2020::get), (2021, year_2021::get)];
+    let years: Vec<(u16, fn() -> Year)> = vec![(2020, year_2020::get), (2021, year_2021::get), (2022, year_2022::get)];
     let get_year = |y| {
         let year_number = parse_arg("year", y, || years.iter().last().unwrap().0);
         years
