@@ -5,13 +5,15 @@ use std::path::Path;
 
 use colored::*;
 use reqwest::blocking::Client;
-use reqwest::header::COOKIE;
+use reqwest::header::{COOKIE, USER_AGENT};
 
 use macros::days_vec;
 
 use crate::day::Day;
 use crate::parse_arg;
 use crate::util::format_duration;
+
+const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
 
 fn first_line(s: &str) -> &str {
     s.lines().next().unwrap()
@@ -69,6 +71,7 @@ impl Year {
                         )
                     ),
                 )
+                .header(USER_AGENT, format!("my own rust runner by {}", AUTHOR))
                 .send()?
                 .text()?;
             assert_ne!(
