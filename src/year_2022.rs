@@ -10,5 +10,6 @@ pub fn get() -> Year {
     Year {
         year: 2022,
         days: days_vec!(2),
+        days: days_vec!(1),
     }
 }

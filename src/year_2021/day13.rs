@@ -42,7 +42,7 @@ impl Day<'_> for Day13 {
         let folds = folds_str
             .lines()
             .map(|l| {
-                let (axis, n) = &l["fold along ".len()..].split_once('=')?;
+                let (axis, n) = l["fold along ".len()..].split_once('=')?;
                 Some((axis == "x", n.parse().ok()?))
             })
             .map(Option::unwrap)
