@@ -1,6 +1,7 @@
-use crate::day::Day;
-use crate::util::{split_pair, Joinable};
 use std::cmp::max;
+
+use crate::day::Day;
+use crate::util::Joinable;
 
 pub struct Day13 {
     grid: Vec<Vec<bool>>,
@@ -37,11 +38,11 @@ impl Day<'_> for Day13 {
     type T2 = String;
 
     fn new(input: &str) -> Self {
-        let (dots, folds_str) = split_pair(input, "\n\n").unwrap();
+        let (dots, folds_str) = input.split_once("\n\n").unwrap();
         let folds = folds_str
             .lines()
             .map(|l| {
-                let (axis, n) = split_pair(&l["fold along ".len()..], "=")?;
+                let (axis, n) = &l["fold along ".len()..].split_once('=')?;
                 Some((axis == "x", n.parse().ok()?))
             })
             .map(Option::unwrap)
@@ -60,7 +61,7 @@ impl Day<'_> for Day13 {
             grid: dots
                 .lines()
                 .map(|l| {
-                    let (x, y) = split_pair(l, ",")?;
+                    let (x, y) = l.split_once(',')?;
                     Some((x.parse().ok()?, y.parse().ok()?))
                 })
                 .map(Option::unwrap)

@@ -1,5 +1,4 @@
 use crate::day::Day;
-use crate::util::split_pair;
 use fnv::FnvHashSet;
 use std::cell::Cell;
 
@@ -23,10 +22,10 @@ fn parse(input: &str) -> Option<Day16> {
             .next()?
             .lines()
             .map(|l| {
-                let (field, constraints) = split_pair(l, ": ")?;
-                let (range1, range2) = split_pair(constraints, " or ")?;
-                let (min1, max1) = split_pair(range1, "-")?;
-                let (min2, max2) = split_pair(range2, "-")?;
+                let (field, constraints) = l.split_once(": ")?;
+                let (range1, range2) = constraints.split_once(" or ")?;
+                let (min1, max1) = range1.split_once('-')?;
+                let (min2, max2) = range2.split_once('-')?;
                 Some((
                     field,
                     (min1.parse().ok()?, max1.parse().ok()?),

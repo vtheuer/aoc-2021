@@ -1,5 +1,5 @@
 use crate::day::Day;
-use crate::util::{split_pair, Joinable};
+use crate::util::Joinable;
 
 #[derive(Debug, Clone)]
 enum Rule {
@@ -101,10 +101,10 @@ impl<'a> Day<'a> for Day19<'a> {
     type T2 = usize;
 
     fn new(input: &'a str) -> Self {
-        let (all_rules, messages) = split_pair(input, "\n\n").unwrap();
+        let (all_rules, messages) = input.split_once("\n\n").unwrap();
         let mut rules = all_rules
             .lines()
-            .map(|l| split_pair(l, ": "))
+            .map(|l| l.split_once(": "))
             .map(Option::unwrap)
             .map(|(i, r)| (i.parse::<usize>().unwrap(), parse_rule(r)))
             .collect::<Vec<_>>();

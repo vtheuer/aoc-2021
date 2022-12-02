@@ -1,5 +1,5 @@
 use crate::day::Day;
-use crate::util::{split_pair, Joinable, SortableByKey};
+use crate::util::{Joinable, SortableByKey};
 use fnv::{FnvHashMap, FnvHashSet};
 
 pub struct Day21<'a> {
@@ -15,7 +15,7 @@ impl<'a> Day<'a> for Day21<'a> {
         let recipes = input
             .lines()
             .map(|l| {
-                let (ingredients, allergens) = split_pair(l, " (contains ")?;
+                let (ingredients, allergens) = l.split_once(" (contains ")?;
                 Some((
                     ingredients.split(' ').collect(),
                     allergens[..allergens.len() - 1].split(", ").collect(),

@@ -5,7 +5,7 @@ use std::collections::VecDeque;
 use fnv::{FnvHashMap, FnvHashSet};
 
 use crate::day::Day;
-use crate::util::{split_pair, Joinable};
+use crate::util::Joinable;
 
 pub struct Day12<'a> {
     caves: Vec<&'a str>,
@@ -60,7 +60,7 @@ impl<'a> Day<'a> for Day12<'a> {
             .filter(|(_, &cave)| cave.chars().next().unwrap().is_uppercase())
             .fold(0, |big_caves, (i, _)| add(big_caves, i));
         Self {
-            edges: input.lines().map(|l| split_pair(l, "-").unwrap()).fold(
+            edges: input.lines().map(|l| l.split_once('-').unwrap()).fold(
                 vec![vec![false; caves.len()]; caves.len()],
                 |mut edges, (f, t)| {
                     let fi = find_index(&caves, f);

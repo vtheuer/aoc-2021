@@ -1,5 +1,4 @@
 use crate::day::Day;
-use crate::util::{rsplit_pair, split_pair};
 use fnv::{FnvHashMap, FnvHashSet};
 
 pub struct Day07<'a> {
@@ -39,14 +38,15 @@ impl<'a> Day<'a> for Day07<'a> {
             rules: input
                 .lines()
                 .map(|l| {
-                    let (bag, content) = split_pair(l, " bags contain ")?;
+                    let (bag, content) = l.split_once(" bags contain ")?;
                     Some((
                         bag,
                         content
                             .split(", ")
                             .filter_map(|content| {
-                                let (count_and_bag, _) = rsplit_pair(content, " ")?;
-                                let (count, bag) = split_pair(count_and_bag, " ")?;
+                                let input = content;
+                                let (count_and_bag, _) = input.rsplit_once(' ')?;
+                                let (count, bag) = count_and_bag.split_once(' ')?;
 
                                 Some((bag, count.parse().ok()?))
                             })

@@ -1,5 +1,5 @@
 use crate::day::Day;
-use crate::util::{split_pair, Joinable, SortableByKey};
+use crate::util::{Joinable, SortableByKey};
 
 pub struct Day08 {
     entries: Vec<(Vec<u8>, Vec<u8>)>,
@@ -134,7 +134,7 @@ impl Day<'_> for Day08 {
             entries: input
                 .lines()
                 .map(|l| {
-                    let (left, right) = split_pair(l, " | ").unwrap();
+                    let (left, right) = l.split_once(" | ").unwrap();
                     (
                         parse_segments(left)
                             .iter()

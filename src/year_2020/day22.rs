@@ -1,5 +1,4 @@
 use crate::day::Day;
-use crate::util::split_pair;
 use fnv::{FnvHashSet, FnvHasher};
 use std::collections::{HashSet, VecDeque};
 use std::hash::{Hash, Hasher};
@@ -66,7 +65,7 @@ impl Day<'_> for Day22 {
     type T2 = usize;
 
     fn new(input: &str) -> Self {
-        let (a, b) = split_pair(input, "\n\n").unwrap();
+        let (a, b) = input.split_once("\n\n").unwrap();
         Day22 {
             decks: (
                 a.lines().skip(1).map(|n| n.parse().unwrap()).collect(),

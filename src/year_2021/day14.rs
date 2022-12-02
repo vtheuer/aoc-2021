@@ -1,7 +1,6 @@
 use fnv::FnvHashMap;
 
 use crate::day::Day;
-use crate::util::split_pair;
 
 pub struct Day14 {
     start: FnvHashMap<(u8, u8), usize>,
@@ -35,7 +34,7 @@ impl Day<'_> for Day14 {
     type T2 = usize;
 
     fn new(input: &str) -> Self {
-        let (start, pairs) = split_pair(input, "\n\n").unwrap();
+        let (start, pairs) = input.split_once("\n\n").unwrap();
         Self {
             start: start.as_bytes().windows(2).fold(FnvHashMap::default(), |mut start, w| {
                 *start.entry((w[0], w[1])).or_insert(0) += 1;

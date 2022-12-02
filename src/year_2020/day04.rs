@@ -1,5 +1,4 @@
 use crate::day::Day;
-use crate::util::split_pair;
 use fnv::FnvHashSet;
 
 pub struct Day04<'a> {
@@ -17,7 +16,7 @@ impl<'a> Day<'a> for Day04<'a> {
                 .map(|group| {
                     group
                         .split(char::is_whitespace)
-                        .filter_map(|pair| split_pair(pair, ":"))
+                        .filter_map(|pair| pair.split_once(':'))
                         .collect::<Vec<_>>()
                 })
                 .filter(|pairs| pairs.len() >= pairs.iter().find(|(k, _)| *k == "cid").and(Some(8)).unwrap_or(7))

@@ -1,5 +1,4 @@
 use crate::day::Day;
-use crate::util::split_pair;
 
 pub struct Day02<'a> {
     passwords: Vec<(usize, usize, char, &'a str)>,
@@ -14,9 +13,9 @@ impl<'a> Day<'a> for Day02<'a> {
             passwords: input
                 .lines()
                 .map(|l| {
-                    let (rule, password) = split_pair(l, ": ")?;
-                    let (range, c) = split_pair(rule, " ")?;
-                    let (min, max) = split_pair(range, "-")?;
+                    let (rule, password) = l.split_once(": ")?;
+                    let (range, c) = rule.split_once(' ')?;
+                    let (min, max) = range.split_once('-')?;
 
                     Some((min.parse().ok()?, max.parse().ok()?, c.chars().next()?, password))
                 })

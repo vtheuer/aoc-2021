@@ -6,7 +6,6 @@ enum Instruction {
     Mem(usize, usize),
 }
 
-use crate::util::split_pair;
 use fnv::FnvHashMap;
 use Instruction::*;
 
@@ -75,7 +74,7 @@ impl Day<'_> for Day14 {
                             .collect(),
                     ),
                     "mem[" => {
-                        let (address, value) = split_pair(&l[4..], "] = ").unwrap();
+                        let (address, value) = &l[4..].split_once("] = ").unwrap();
                         Mem(address.parse().unwrap(), value.parse().unwrap())
                     }
                     s => unreachable!("unexpected start {}", s),
