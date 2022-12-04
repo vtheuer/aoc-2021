@@ -15,7 +15,7 @@ pub fn days_vec(token_stream: TokenStream) -> TokenStream {
     format!(
         "vec![{}]",
         (1..=day_count)
-            .map(|n| format!("|i| {{day{0:02}::Day{0:02}::run({0}, i)}},", n))
+            .map(|n| format!("|y, i| {{day{0:02}::Day{0:02}::run(y, {0}, i)}},", n))
             .collect::<String>(),
     )
     .parse()

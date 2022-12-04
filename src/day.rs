@@ -51,7 +51,7 @@ pub trait Day<'a>: Sized {
     fn part_1(&self) -> Self::T1;
     fn part_2(&self) -> Self::T2;
 
-    fn run(n: u8, input: &'a str) -> u128 {
+    fn run(year: u16, n: u8, input: &'a str) -> u128 {
         let (day, parse_duration) = time(|| Self::new(input));
 
         let (output_1, part_1_duration) = time(|| day.part_1());
@@ -60,7 +60,7 @@ pub trait Day<'a>: Sized {
         let total = parse_duration + part_1_duration + part_2_duration;
 
         print_table(
-            (&format!("Day {}", n), &format_duration(total)),
+            (&format!("{} Day {}", year, n), &format_duration(total)),
             &[
                 ("Parse  :", &format_duration(parse_duration)),
                 (&format!("Part 1 : {}", output_1), &format_duration(part_1_duration)),

@@ -21,7 +21,7 @@ fn first_line(s: &str) -> &str {
 
 pub struct Year {
     pub year: u16,
-    pub days: Vec<for<'r> fn(&'r str) -> u128>,
+    pub days: Vec<for<'r> fn(u16, &'r str) -> u128>,
 }
 
 impl Year {
@@ -46,7 +46,7 @@ impl Year {
     }
 
     fn run_day_by_number(&self, n: usize) -> u128 {
-        self.days[n - 1](&self.get_input(n).unwrap())
+        self.days[n - 1](self.year, &self.get_input(n).unwrap())
     }
 
     fn get_input(&self, n: usize) -> anyhow::Result<String> {
