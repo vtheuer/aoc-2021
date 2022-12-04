@@ -1,5 +1,6 @@
-use crate::day::Day;
 use std::cell::Cell;
+
+use crate::day::Day;
 
 pub struct Day09 {
     numbers: Vec<usize>,
@@ -25,10 +26,10 @@ impl Day<'_> for Day09 {
             .skip(25)
             .find(|&(i, n)| {
                 let previous = &self.numbers[i - 25..i];
-                previous
+                !previous
                     .iter()
                     .enumerate()
-                    .flat_map(|(i, a)| previous.iter().skip(i + 1).map(move |b| *a + *b))
+                    .flat_map(|(j, a)| previous.iter().skip(j + 1).map(move |b| *a + *b))
                     .any(|m| m == *n)
             })
             .unwrap()
