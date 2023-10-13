@@ -1,3 +1,5 @@
+use crate::util::NumArg::{Last, Nth};
+use num::Num;
 use std::fmt::Display;
 use std::str::FromStr;
 use std::vec::IntoIter;
@@ -15,10 +17,18 @@ pub fn format_duration(time: u128) -> String {
     }
 }
 
-pub fn parse_arg<T: FromStr, F: FnOnce() -> T>(arg_name: &str, arg: &str, get_last: F) -> T {
+pub enum NumArg<T: Num> {
+    Nth(T),
+    Last,
+}
+
+pub fn parse_arg<T>(arg_name: &str, arg: &str) -> NumArg<T>
+where
+    T: Num + FromStr,
+{
     match arg {
-        "last" => Ok(get_last()),
-        n => n.parse(),
+        "last" => Ok(Last),
+        nth => nth.parse().map(|n| Nth(n)),
     }
     .unwrap_or_else(|_| panic!("{} : expected either a number or \"last\", got {}", arg_name, arg))
 }

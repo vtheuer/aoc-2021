@@ -1,4 +1,4 @@
-use macros::days_vec;
+use macros::year;
 
 use crate::day::Day;
 use crate::year::Year;
@@ -27,9 +27,4 @@ mod day21;
 mod day22;
 mod day23;
 
-pub fn get() -> Year {
-    Year {
-        year: 2020,
-        days: days_vec!(23),
-    }
-}
+pub const YEAR_2020: Year = year!(2020);

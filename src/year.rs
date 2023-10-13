@@ -1,17 +1,14 @@
 use std::env;
-use std::error::Error;
-use std::fs::{create_dir_all, read_dir, read_to_string, write};
+use std::fs::{create_dir_all, read_to_string, write};
 use std::path::Path;
 
 use colored::*;
 use reqwest::blocking::Client;
 use reqwest::header::{COOKIE, USER_AGENT};
 
-use macros::days_vec;
-
 use crate::day::Day;
-use crate::parse_arg;
-use crate::util::format_duration;
+use crate::util::NumArg::{Last, Nth};
+use crate::util::{format_duration, NumArg};
 
 const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
 
@@ -19,9 +16,11 @@ fn first_line(s: &str) -> &str {
     s.lines().next().unwrap()
 }
 
+type RunDay = for<'r> fn(u16, &'r str) -> u128;
+
 pub struct Year {
     pub year: u16,
-    pub days: Vec<for<'r> fn(u16, &'r str) -> u128>,
+    pub days: [Option<RunDay>; 25],
 }
 
 impl Year {
@@ -29,27 +28,43 @@ impl Year {
         println!(
             "\n{}",
             &format!(
-                "Total run time for {} ({}/24): {}",
+                "Total run time for {} ({}/25): {}",
                 self.year,
-                self.days.len(),
-                format_duration((1..=self.days.len()).map(|n| self.run_day_by_number(n)).sum())
+                self.days.iter().filter(|day| day.is_some()).count(),
+                format_duration(
+                    self.days
+                        .iter()
+                        .enumerate()
+                        .map(|(n, day)| day.map(|d| self.run_day((1 + n as u8, d))).unwrap_or(0))
+                        .sum()
+                )
             )
             .bold()
             .cyan()
         )
     }
 
-    pub fn run_day(&self, d: &str) -> u128 {
-        let day_number = parse_arg("day", d, || self.days.len());
-        assert!(day_number <= self.days.len(), "day {} not found", day_number);
-        self.run_day_by_number(day_number)
+    pub fn run_day_by_number(&self, d: NumArg<u8>) -> u128 {
+        self.run_day(match d {
+            Nth(n) => (
+                n,
+                self.days[n as usize].unwrap_or_else(|| panic!("day {} not found", n)),
+            ),
+            Last => self
+                .days
+                .iter()
+                .enumerate()
+                .filter_map(|(n, day)| day.map(|d| (1 + n as u8, d)))
+                .last()
+                .unwrap(),
+        })
     }
 
-    fn run_day_by_number(&self, n: usize) -> u128 {
-        self.days[n - 1](self.year, &self.get_input(n).unwrap())
+    fn run_day(&self, (n, day): (u8, RunDay)) -> u128 {
+        day(self.year, &self.get_input(n).unwrap())
     }
 
-    fn get_input(&self, n: usize) -> anyhow::Result<String> {
+    fn get_input(&self, n: u8) -> anyhow::Result<String> {
         let dir = format!("inputs/{}", self.year);
         create_dir_all(&dir).unwrap_or_else(|_| panic!("could not create directory {}", &dir));
 

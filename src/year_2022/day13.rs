@@ -2,12 +2,9 @@ use std::cmp::Ordering;
 use std::cmp::Ordering::{Equal, Less};
 use Ordering::Greater;
 
-use regex::internal::Input;
-
 use Packet::*;
 
 use crate::day::Day;
-use crate::util::SortableByKey;
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 enum Packet {

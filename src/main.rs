@@ -8,11 +8,14 @@ use std::str::FromStr;
 use colored::*;
 use fnv::FnvHashMap;
 
-use macros::days_vec;
 use util::parse_arg;
+use year_2020::YEAR_2020;
+use year_2021::YEAR_2021;
+use year_2022::YEAR_2022;
 
 use crate::day::Day;
 use crate::util::format_duration;
+use crate::util::NumArg::{Last, Nth};
 use crate::year::Year;
 
 mod day;
@@ -23,26 +26,25 @@ mod year_2021;
 mod year_2022;
 
 fn main() {
-    let years: Vec<(u16, fn() -> Year)> = vec![(2020, year_2020::get), (2021, year_2021::get), (2022, year_2022::get)];
-    let get_year = |y| {
-        let year_number = parse_arg("year", y, || years.iter().last().unwrap().0);
-        years
+    let years = vec![YEAR_2020, YEAR_2021, YEAR_2022];
+    let get_year = |y| match parse_arg::<u16>("year", y) {
+        Nth(nth) => years
             .iter()
-            .find(|(y, _)| *y == year_number)
-            .unwrap_or_else(|| panic!("year {} not found", y))
-            .1()
+            .find(|y| y.year == nth)
+            .unwrap_or_else(|| panic!("year {} not found", y)),
+        Last => years.iter().last().unwrap(),
     };
 
     match &env::args().skip(1).collect::<Vec<_>>()[..] {
         [y, d] => {
-            get_year(y).run_day(d);
+            get_year(y).run_day_by_number(parse_arg("day", d));
         }
         [y] => {
             get_year(y).run();
         }
         [] => {
-            for (_, year) in years {
-                year().run()
+            for year in years {
+                year.run()
             }
         }
         _ => panic!("Usage: aoc [YEAR] [DAY]"),
