@@ -35,7 +35,7 @@ impl Year {
                     self.days
                         .iter()
                         .enumerate()
-                        .map(|(n, day)| day.map(|d| self.run_day((1 + n as u8, d))).unwrap_or(0))
+                        .map(|(n, day)| day.map(|d| self.run_day((n + 1, d))).unwrap_or(0))
                         .sum()
                 )
             )
@@ -44,27 +44,24 @@ impl Year {
         )
     }
 
-    pub fn run_day_by_number(&self, d: NumArg<u8>) -> u128 {
+    pub fn run_day_by_number(&self, d: NumArg<usize>) -> u128 {
         self.run_day(match d {
-            Nth(n) => (
-                n,
-                self.days[n as usize].unwrap_or_else(|| panic!("day {} not found", n)),
-            ),
+            Nth(n) => (n, self.days[n - 1].unwrap_or_else(|| panic!("day {} not found", n))),
             Last => self
                 .days
                 .iter()
                 .enumerate()
-                .filter_map(|(n, day)| day.map(|d| (1 + n as u8, d)))
+                .filter_map(|(i, day)| day.map(|d| (i + 1, d)))
                 .last()
                 .unwrap(),
         })
     }
 
-    fn run_day(&self, (n, day): (u8, RunDay)) -> u128 {
+    fn run_day(&self, (n, day): (usize, RunDay)) -> u128 {
         day(self.year, &self.get_input(n).unwrap())
     }
 
-    fn get_input(&self, n: u8) -> anyhow::Result<String> {
+    fn get_input(&self, n: usize) -> anyhow::Result<String> {
         let dir = format!("inputs/{}", self.year);
         create_dir_all(&dir).unwrap_or_else(|_| panic!("could not create directory {}", &dir));
 
