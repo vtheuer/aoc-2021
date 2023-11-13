@@ -1,20 +1,7 @@
-use std::env;
-use std::fs::{create_dir_all, read_to_string, write};
-use std::path::Path;
+use crate::util::NumArg::{Last, Nth};
+use crate::util::{format_duration, get_input, NumArg};
 
 use colored::*;
-use reqwest::blocking::Client;
-use reqwest::header::{COOKIE, USER_AGENT};
-
-use crate::day::Day;
-use crate::util::NumArg::{Last, Nth};
-use crate::util::{format_duration, NumArg};
-
-const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
-
-fn first_line(s: &str) -> &str {
-    s.lines().next().unwrap()
-}
 
 type RunDay = for<'r> fn(u16, &'r str) -> u128;
 
@@ -58,41 +45,6 @@ impl Year {
     }
 
     fn run_day(&self, (n, day): (usize, RunDay)) -> u128 {
-        day(self.year, &self.get_input(n).unwrap())
-    }
-
-    fn get_input(&self, n: usize) -> anyhow::Result<String> {
-        let dir = format!("inputs/{}", self.year);
-        create_dir_all(&dir).unwrap_or_else(|_| panic!("could not create directory {}", &dir));
-
-        let input_file = format!("{}/{:02}.txt", dir, n);
-
-        if Path::new(&input_file).exists() {
-            Ok(read_to_string(input_file)?)
-        } else {
-            println!("Fetching input for day {}...", n);
-            let input = Client::new()
-                .get(format!("https://adventofcode.com/{}/day/{}/input", self.year, n))
-                .header(
-                    COOKIE,
-                    format!(
-                        "session={}",
-                        first_line(
-                            &read_to_string(".session")
-                                .expect("please provide a session token in a file named .session")
-                        )
-                    ),
-                )
-                .header(USER_AGENT, format!("my own rust runner by {}", AUTHOR))
-                .send()?
-                .text()?;
-            assert_ne!(
-                first_line(&input),
-                "Puzzle inputs differ by user.  Please log in to get your puzzle input.",
-                "session has expired"
-            );
-            write(input_file, &input)?;
-            Ok(input)
-        }
+        day(self.year, &get_input(self.year, n as u8).unwrap())
     }
 }

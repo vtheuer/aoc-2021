@@ -1,8 +1,14 @@
 use crate::util::NumArg::{Last, Nth};
 use num::Num;
+use std::env;
 use std::fmt::Display;
+use std::fs::{create_dir_all, read_to_string, write};
+use std::path::Path;
 use std::str::FromStr;
 use std::vec::IntoIter;
+
+use reqwest::blocking::Client;
+use reqwest::header::{COOKIE, USER_AGENT};
 
 pub fn format_duration(time: u128) -> String {
     let ftime = time as f64;
@@ -67,5 +73,45 @@ where
 {
     fn join(self, sep: &str) -> String {
         self.map(|e| e.to_string()).collect::<Vec<_>>().join(sep)
+    }
+}
+
+const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
+
+fn first_line(s: &str) -> &str {
+    s.lines().next().unwrap()
+}
+
+pub fn get_input(year: u16, day: u8) -> anyhow::Result<String> {
+    let dir = format!("inputs/{}", year);
+    create_dir_all(&dir).unwrap_or_else(|_| panic!("could not create directory {}", &dir));
+
+    let input_file = format!("{}/{:02}.txt", dir, day);
+
+    if Path::new(&input_file).exists() {
+        Ok(read_to_string(input_file)?)
+    } else {
+        println!("Fetching input for day {}...", day);
+        let input = Client::new()
+            .get(format!("https://adventofcode.com/{}/day/{}/input", year, day))
+            .header(
+                COOKIE,
+                format!(
+                    "session={}",
+                    first_line(
+                        &read_to_string(".session").expect("please provide a session token in a file named .session")
+                    )
+                ),
+            )
+            .header(USER_AGENT, format!("my own rust runner by {}", AUTHOR))
+            .send()?
+            .text()?;
+        assert_ne!(
+            first_line(&input),
+            "Puzzle inputs differ by user.  Please log in to get your puzzle input.",
+            "session has expired"
+        );
+        write(input_file, &input)?;
+        Ok(input)
     }
 }
