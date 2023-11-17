@@ -27,7 +27,7 @@ if [ -f "$filename" ]; then
   exit 1
 fi
 
-sed -i -E ':a;N;$!ba;s/(mod day[0-9]{2};\n)\n/\1mod day'"$padded_day"';\n\n/; s/days_vec!\([0-9]+\)/days_vec!('"$day"')/' "$directory.rs"
+sed -i -E ':a;N;$!ba;s/(mod day[0-9]{2};\n)\n/\1mod day'"$padded_day"';\n\n/' "$directory.rs"
 
 cat <<EOF > "$filename"
 use crate::day::Day;
