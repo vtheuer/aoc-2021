@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::first_line;
 
 pub struct Day11 {
     jellyfishes: Vec<Vec<u8>>,
@@ -69,7 +70,7 @@ impl Day<'_> for Day11 {
         let jellyfishes: Vec<Vec<u8>> = input.lines().map(|l| l.bytes().map(|j| j - b'0').collect()).collect();
         Self {
             height: jellyfishes.len(),
-            width: input.lines().next().unwrap().len(),
+            width: first_line(input).len(),
             jellyfishes,
         }
     }

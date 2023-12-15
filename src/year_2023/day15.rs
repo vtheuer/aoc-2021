@@ -1,5 +1,5 @@
 use crate::day::Day;
-use crate::util::FindIndex;
+use crate::util::{first_line, FindIndex};
 
 pub struct Day15<'a> {
     strings: Vec<&'a [u8]>,
@@ -15,7 +15,7 @@ impl<'a> Day<'a> for Day15<'a> {
 
     fn new(input: &'a str) -> Self {
         Self {
-            strings: input.lines().next().unwrap().split(',').map(|s| s.as_bytes()).collect(),
+            strings: first_line(input).split(',').map(|s| s.as_bytes()).collect(),
         }
     }
 

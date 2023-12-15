@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::first_line;
 
 pub struct Day11 {
     galaxies: Vec<(usize, usize)>,
@@ -35,7 +36,7 @@ impl Day<'_> for Day11 {
 
     fn new(input: &str) -> Self {
         let height = input.lines().count();
-        let width = input.lines().next().unwrap().len();
+        let width = first_line(input).len();
         let (galaxies, empty_rows, empty_columns) = input
             .lines()
             .enumerate()

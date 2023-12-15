@@ -1,6 +1,7 @@
 use std::cmp::{max, min};
 
 use crate::day::Day;
+use crate::util::first_line;
 
 pub struct Day17 {
     min_x: isize,
@@ -61,7 +62,7 @@ impl Day<'_> for Day17 {
     type T2 = usize;
 
     fn new(input: &str) -> Self {
-        let (_, target) = input.lines().next().unwrap().split_once(": ").unwrap();
+        let (_, target) = first_line(input).split_once(": ").unwrap();
         let t = target
             .split(", ")
             .flat_map(|p| p[2..].split(".."))

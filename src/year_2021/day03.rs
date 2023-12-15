@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::first_line;
 
 pub struct Day03 {
     numbers: Vec<u16>,
@@ -47,7 +48,7 @@ impl Day<'_> for Day03 {
                 .lines()
                 .map(|l| l.bytes().fold(0, |acc, b| acc << 1 | (if b == b'1' { 1 } else { 0 })))
                 .collect(),
-            bit_count: input.lines().next().unwrap().len() as u8,
+            bit_count: first_line(input).len() as u8,
         }
     }
 
