@@ -12,24 +12,27 @@ pub struct Year {
 }
 
 impl Year {
-    pub fn run(&self, client: &Client) {
+    pub fn run(&self, client: &Client) -> u128 {
+        let duration = self
+            .days
+            .iter()
+            .enumerate()
+            .map(|(n, day)| day.map(|d| self.run_day((n + 1, d), client)).unwrap_or(0))
+            .sum();
+
         println!(
             "\n{}",
             &format!(
                 "Total run time for {} ({}/25): {}",
                 self.year,
                 self.days.iter().filter(|day| day.is_some()).count(),
-                format_duration(
-                    self.days
-                        .iter()
-                        .enumerate()
-                        .map(|(n, day)| day.map(|d| self.run_day((n + 1, d), client)).unwrap_or(0))
-                        .sum()
-                )
+                format_duration(duration)
             )
             .bold()
             .cyan()
-        )
+        );
+
+        duration
     }
 
     pub fn run_day_by_number(&self, d: NumArg<usize>, client: &Client) -> u128 {

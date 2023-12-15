@@ -48,9 +48,13 @@ fn main() {
             get_year(y).run(&client);
         }
         [] => {
-            for year in years {
-                year.run(&client)
-            }
+            let duration = years.into_iter().map(|year| year.run(&client)).sum::<u128>();
+            println!(
+                "\n{}",
+                &format!("Total run time for all years: {}", format_duration(duration))
+                    .bold()
+                    .cyan()
+            );
         }
         _ => panic!("Usage: aoc [YEAR] [DAY]"),
     };
