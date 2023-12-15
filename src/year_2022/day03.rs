@@ -2,7 +2,6 @@ use std::io::BufRead;
 use std::ops::BitAnd;
 
 use crate::day::Day;
-use crate::util::SortableByKey;
 
 pub struct Day03 {
     rucksacks: Vec<Vec<u8>>,

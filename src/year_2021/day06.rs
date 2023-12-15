@@ -1,7 +1,3 @@
-use std::cmp::min;
-
-use fnv::{FnvHashMap, FnvHashSet};
-
 use crate::day::Day;
 
 pub struct Day06 {

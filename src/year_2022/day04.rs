@@ -1,5 +1,4 @@
 use crate::day::Day;
-use crate::util::SortableByKey;
 
 pub struct Day04 {
     pairs: Vec<Vec<u8>>,

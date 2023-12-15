@@ -1,8 +1,6 @@
 use std::borrow::Borrow;
-use std::cmp::{min, min_by_key};
-use std::thread::current;
 
-use fnv::{FnvHashMap, FnvHashSet};
+use fnv::FnvHashMap;
 use regex::Regex;
 
 use crate::day::Day;

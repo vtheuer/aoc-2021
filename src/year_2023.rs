@@ -1,3 +1,8 @@
+use macros::year;
+
+use crate::day::Day;
+use crate::year::Year;
+
 mod day01;
 mod day02;
 mod day03;
@@ -13,10 +18,5 @@ mod day12;
 mod day13;
 mod day14;
 mod day15;
-
-use macros::year;
-
-use crate::day::Day;
-use crate::year::Year;
 
 pub const YEAR_2023: Year = year!(2023);

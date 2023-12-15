@@ -1,6 +1,7 @@
+use fnv::{FnvHashMap, FnvHashSet};
+
 use crate::day::Day;
 use crate::util::{Joinable, SortableByKey};
-use fnv::{FnvHashMap, FnvHashSet};
 
 pub struct Day21<'a> {
     recipes: Vec<(FnvHashSet<&'a str>, FnvHashSet<&'a str>)>,

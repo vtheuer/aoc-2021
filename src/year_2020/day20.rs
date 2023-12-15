@@ -1,8 +1,9 @@
-use fnv::{FnvHashMap, FnvHashSet};
+use fnv::FnvHashMap;
+
+use Side::*;
 
 use crate::day::Day;
 use crate::util::Joinable;
-use Side::*;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 enum Side {

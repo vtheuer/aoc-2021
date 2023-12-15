@@ -1,5 +1,5 @@
 use crate::day::Day;
-use crate::util::{Joinable, SortableByKey};
+use crate::util::SortableByKey;
 
 pub struct Day08 {
     entries: Vec<(Vec<u8>, Vec<u8>)>,

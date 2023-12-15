@@ -1,9 +1,6 @@
-use std::cmp::max;
-use std::convert::identity;
 use std::io::BufRead;
 
 use crate::day::Day;
-use crate::util::Joinable;
 
 pub struct Day08<'a> {
     trees: Vec<&'a [u8]>,

@@ -1,6 +1,3 @@
-use std::collections::VecDeque;
-use std::convert::identity;
-
 use crate::day::Day;
 
 pub struct Day18 {

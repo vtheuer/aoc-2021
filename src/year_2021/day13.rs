@@ -1,5 +1,3 @@
-use std::cmp::max;
-
 use crate::day::Day;
 use crate::util::Joinable;
 

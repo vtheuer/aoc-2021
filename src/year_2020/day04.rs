@@ -1,5 +1,6 @@
-use crate::day::Day;
 use fnv::FnvHashSet;
+
+use crate::day::Day;
 
 pub struct Day04<'a> {
     passports: Vec<Vec<(&'a str, &'a str)>>,

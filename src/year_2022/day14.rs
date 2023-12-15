@@ -1,10 +1,6 @@
-use std::thread::sleep;
-use std::time::Duration;
-
 use Element::*;
 
 use crate::day::Day;
-use crate::util::Joinable;
 
 #[derive(Debug, Copy, Clone, Eq, PartialEq)]
 enum Element {

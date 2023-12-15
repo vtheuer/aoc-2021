@@ -1,9 +1,10 @@
-use num::Num;
 use std::fmt::Display;
 use std::io::Read;
 
+use num::Num;
+
 use crate::day::Day;
-use crate::util::{FindIndex, Joinable};
+use crate::util::FindIndex;
 
 const WIDTH: u8 = 7;
 

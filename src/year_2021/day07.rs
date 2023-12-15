@@ -2,8 +2,6 @@ use cmp::max;
 use std::cmp;
 use std::cmp::min;
 use std::convert::identity;
-use std::thread::sleep;
-use std::time::Duration;
 
 use crate::day::Day;
 

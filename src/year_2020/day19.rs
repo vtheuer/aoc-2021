@@ -1,3 +1,5 @@
+use Rule::*;
+
 use crate::day::Day;
 use crate::util::Joinable;
 
@@ -6,8 +8,6 @@ enum Rule {
     Char(u8),
     Composite((Vec<usize>, Option<Vec<usize>>)),
 }
-
-use Rule::*;
 
 pub struct Day19<'a> {
     rules: Vec<Rule>,

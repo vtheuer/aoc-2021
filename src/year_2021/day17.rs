@@ -1,4 +1,3 @@
-use std::cell::Cell;
 use std::cmp::{max, min};
 
 use crate::day::Day;

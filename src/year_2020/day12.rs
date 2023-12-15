@@ -1,3 +1,6 @@
+use Direction::*;
+use Rotation::*;
+
 use crate::day::Day;
 
 #[derive(Clone, Copy, Debug, std::cmp::PartialEq)]
@@ -7,8 +10,6 @@ enum Direction {
     West,
     North,
 }
-
-use Direction::*;
 
 impl Direction {
     fn apply(&self, (x, y): (isize, isize), value: isize) -> (isize, isize) {
@@ -35,8 +36,6 @@ enum Rotation {
     Left,
     Right,
 }
-
-use Rotation::*;
 
 const DIRECTIONS: [Direction; 4] = [East, South, West, North];
 

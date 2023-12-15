@@ -1,7 +1,8 @@
-use crate::day::Day;
-use crate::year_2023::day08::Direction::{Left, Right};
 use fnv::FnvHashMap;
 use num::Integer;
+
+use crate::day::Day;
+use crate::year_2023::day08::Direction::{Left, Right};
 
 #[derive(Eq, PartialEq, Copy, Clone)]
 enum Direction {

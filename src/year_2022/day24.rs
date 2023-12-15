@@ -2,12 +2,10 @@ use std::cell::Cell;
 use std::collections::VecDeque;
 
 use fnv::{FnvHashMap, FnvHashSet};
-use num::traits::MulAdd;
 
 use Direction::*;
 
 use crate::day::Day;
-use crate::util::Joinable;
 
 #[derive(Copy, Clone, Debug)]
 enum Direction {

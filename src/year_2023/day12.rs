@@ -1,8 +1,6 @@
 use fnv::FnvHashMap;
-use std::collections::btree_map::Entry;
 
 use crate::day::Day;
-use crate::util::Joinable;
 
 struct Record {
     springs: Vec<Option<bool>>,

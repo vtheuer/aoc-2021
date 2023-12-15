@@ -1,5 +1,6 @@
-use crate::day::Day;
 use fnv::{FnvHashMap, FnvHashSet};
+
+use crate::day::Day;
 
 pub struct Day07<'a> {
     rules: FnvHashMap<&'a str, FnvHashMap<&'a str, u32>>,

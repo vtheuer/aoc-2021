@@ -1,3 +1,7 @@
+use fnv::FnvHashMap;
+
+use Instruction::*;
+
 use crate::day::Day;
 
 #[derive(Debug)]
@@ -5,9 +9,6 @@ enum Instruction {
     Mask(Vec<Option<bool>>),
     Mem(usize, usize),
 }
-
-use fnv::FnvHashMap;
-use Instruction::*;
 
 pub struct Day14 {
     instructions: Vec<Instruction>,

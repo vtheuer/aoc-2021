@@ -1,6 +1,4 @@
 use crate::day::Day;
-use crate::util::Joinable;
-use std::convert::identity;
 
 pub struct Day11 {
     jellyfishes: Vec<Vec<u8>>,

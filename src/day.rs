@@ -3,8 +3,8 @@ use std::time::Instant;
 
 use colored::*;
 
-use crate::util::format_duration;
-use crate::util::Joinable;
+use crate::util::{format_duration, get_title};
+use crate::util::{get_input, Joinable};
 
 fn time<T, F: Fn() -> T>(f: F) -> (T, u128) {
     let begin = Instant::now();

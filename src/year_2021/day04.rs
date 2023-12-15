@@ -1,6 +1,6 @@
-use fnv::FnvHashSet;
-use std::borrow::BorrowMut;
 use std::cell::Cell;
+
+use fnv::FnvHashSet;
 
 use crate::day::Day;
 

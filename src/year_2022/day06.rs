@@ -1,6 +1,7 @@
+use std::convert::identity;
+
 use crate::day::Day;
 use crate::util::FindIndex;
-use std::convert::identity;
 
 pub struct Day06<'a> {
     input: &'a str,

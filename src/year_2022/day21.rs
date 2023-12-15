@@ -1,5 +1,4 @@
-use std::collections::{HashSet, VecDeque};
-use std::rc::{Rc, Weak};
+use std::collections::HashSet;
 
 use fnv::{FnvBuildHasher, FnvHashMap, FnvHashSet};
 

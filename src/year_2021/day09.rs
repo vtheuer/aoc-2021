@@ -1,7 +1,5 @@
-use std::cell::{Cell, RefCell};
+use std::cell::RefCell;
 use std::collections::VecDeque;
-use std::thread::sleep;
-use std::time::Duration;
 
 use fnv::FnvHashSet;
 

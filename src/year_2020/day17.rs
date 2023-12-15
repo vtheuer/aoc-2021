@@ -1,6 +1,8 @@
-use crate::day::Day;
-use fnv::FnvHashSet;
 use std::hash::Hash;
+
+use fnv::FnvHashSet;
+
+use crate::day::Day;
 
 pub struct Day17 {
     space: FnvHashSet<(i8, i8)>,

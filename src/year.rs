@@ -2,7 +2,7 @@ use colored::*;
 
 use crate::client::Client;
 use crate::util::NumArg::{Last, Nth};
-use crate::util::{format_duration, NumArg};
+use crate::util::{format_duration, get_input, NumArg};
 
 type RunDay = for<'r> fn(&'r str, &'r str) -> u128;
 

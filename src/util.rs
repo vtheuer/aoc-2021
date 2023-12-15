@@ -1,16 +1,10 @@
-use crate::util::NumArg::{Last, Nth};
-use num::Num;
-use regex::Regex;
-use std::collections::HashMap;
-use std::env;
 use std::fmt::Display;
-use std::fs::{create_dir_all, read_to_string, write};
-use std::path::Path;
 use std::str::FromStr;
 use std::vec::IntoIter;
 
-use reqwest::blocking::Client;
-use reqwest::header::{COOKIE, USER_AGENT};
+use num::Num;
+
+use crate::util::NumArg::{Last, Nth};
 
 pub fn format_duration(time: u128) -> String {
     let ftime = time as f64;

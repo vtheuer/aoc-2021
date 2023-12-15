@@ -9,10 +9,6 @@ use reqwest::header::{HeaderMap, HeaderValue, COOKIE};
 
 use crate::util::first_line;
 
-use util::first_line;
-
-use crate::util;
-
 const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
 const TITLES_FILE: &str = ".titles.json";
 

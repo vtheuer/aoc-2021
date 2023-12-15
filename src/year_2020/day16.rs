@@ -1,6 +1,8 @@
-use crate::day::Day;
-use fnv::FnvHashSet;
 use std::cell::Cell;
+
+use fnv::FnvHashSet;
+
+use crate::day::Day;
 
 type Constraint<'a> = (&'a str, (usize, usize), (usize, usize));
 

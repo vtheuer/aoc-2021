@@ -1,3 +1,7 @@
+use std::ops::{Add, Mul};
+
+use Token::*;
+
 use crate::day::Day;
 
 #[derive(Debug, PartialEq)]
@@ -8,9 +12,6 @@ enum Token {
     Plus,
     Times,
 }
-
-use std::ops::{Add, Mul};
-use Token::*;
 
 pub struct Day18 {
     problems: Vec<Vec<Token>>,

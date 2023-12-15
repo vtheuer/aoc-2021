@@ -1,8 +1,9 @@
-use crate::day::Day;
-use fnv::{FnvHashSet, FnvHasher};
-use std::collections::{HashSet, VecDeque};
+use std::collections::VecDeque;
 use std::hash::{Hash, Hasher};
-use std::ptr::hash;
+
+use fnv::{FnvHasher, FnvHashSet};
+
+use crate::day::Day;
 
 pub struct Day22 {
     decks: (Vec<u8>, Vec<u8>),

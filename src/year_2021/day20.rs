@@ -1,5 +1,4 @@
 use crate::day::Day;
-use crate::util::Joinable;
 
 pub struct Day20 {
     enhancement: Vec<bool>,

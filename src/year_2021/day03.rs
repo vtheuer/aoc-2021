@@ -1,5 +1,4 @@
 use crate::day::Day;
-use fnv::FnvHashSet;
 
 pub struct Day03 {
     numbers: Vec<u16>,

@@ -1,6 +1,3 @@
-use std::clone;
-use std::fmt::format;
-
 use fnv::FnvHashMap;
 
 use Line::*;

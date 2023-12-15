@@ -1,10 +1,8 @@
 use std::cmp::{max, min};
 
-use fnv::FnvHashMap;
 use num::Integer;
 
 use crate::day::Day;
-use crate::util::Joinable;
 
 pub struct Day21 {
     p1: u8,

@@ -2,10 +2,9 @@ use std::cell::Cell;
 use std::cmp::Ordering::{Equal, Greater, Less};
 use std::collections::VecDeque;
 
-use fnv::{FnvHashMap, FnvHashSet};
+use fnv::FnvHashSet;
 
 use crate::day::Day;
-use crate::util::Joinable;
 
 pub struct Day12<'a> {
     caves: Vec<&'a str>,

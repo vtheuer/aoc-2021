@@ -1,13 +1,12 @@
-use num::integer::{gcd, lcm};
 use std::borrow::{Borrow, BorrowMut};
-use std::cell::{Cell, RefCell};
+use std::cell::RefCell;
 use std::collections::VecDeque;
 
 use Operand::*;
 use Operation::*;
 
 use crate::day::Day;
-use crate::util::{Joinable, SortableByKey};
+use crate::util::SortableByKey;
 
 #[derive(Debug, Copy, Clone)]
 enum Operand {

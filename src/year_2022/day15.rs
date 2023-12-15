@@ -1,5 +1,3 @@
-use std::convert::identity;
-
 use crate::day::Day;
 use crate::util::SortableByKey;
 

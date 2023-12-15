@@ -1,5 +1,5 @@
 use crate::day::Day;
-use crate::util::{FindIndex, SortableByKey};
+use crate::util::FindIndex;
 
 pub struct Day01 {
     elves: Vec<usize>,

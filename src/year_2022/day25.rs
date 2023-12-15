@@ -1,5 +1,6 @@
-use crate::day::Day;
 use std::collections::VecDeque;
+
+use crate::day::Day;
 
 pub struct Day25<'a> {
     numbers: Vec<&'a str>,

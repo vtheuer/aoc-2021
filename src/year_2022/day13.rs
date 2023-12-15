@@ -1,6 +1,6 @@
+use Ordering::Greater;
 use std::cmp::Ordering;
 use std::cmp::Ordering::{Equal, Less};
-use Ordering::Greater;
 
 use Packet::*;
 

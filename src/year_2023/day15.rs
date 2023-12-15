@@ -1,6 +1,5 @@
 use crate::day::Day;
 use crate::util::FindIndex;
-use std::str::from_utf8;
 
 pub struct Day15<'a> {
     strings: Vec<&'a [u8]>,

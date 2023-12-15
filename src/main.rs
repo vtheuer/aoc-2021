@@ -8,13 +8,13 @@ use std::str::FromStr;
 use colored::*;
 use fnv::FnvHashMap;
 
-use crate::client::Client;
 use util::parse_arg;
 use year_2020::YEAR_2020;
 use year_2021::YEAR_2021;
 use year_2022::YEAR_2022;
 use year_2023::YEAR_2023;
 
+use crate::client::Client;
 use crate::day::Day;
 use crate::util::format_duration;
 use crate::util::NumArg::{Last, Nth};

@@ -1,10 +1,4 @@
-use std::cell::Cell;
-use std::cmp::min;
-use std::collections::{HashSet, VecDeque};
-use std::thread::sleep;
-use std::time::Duration;
-
-use fnv::{FnvBuildHasher, FnvHashSet};
+use std::collections::VecDeque;
 
 use crate::day::Day;
 

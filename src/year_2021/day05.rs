@@ -1,8 +1,4 @@
-use fnv::{FnvHashMap, FnvHashSet};
-use std::cmp::min;
-
 use crate::day::Day;
-use crate::util::Joinable;
 
 pub struct Day05 {
     lines: Vec<((isize, isize), (isize, isize))>,
