@@ -1,9 +1,10 @@
+use std::fmt::Display;
 use std::time::Instant;
 
-use crate::util::Joinable;
-use crate::util::{format_duration, get_title};
 use colored::*;
-use std::fmt::Display;
+
+use crate::util::format_duration;
+use crate::util::Joinable;
 
 fn time<T, F: Fn() -> T>(f: F) -> (T, u128) {
     let begin = Instant::now();
@@ -32,9 +33,9 @@ fn print_table((hk, hv): (&str, &str), rows: &[(&str, &str)]) {
     let left = rows
         .iter()
         .map(|&(k, _)| k)
-        .chain([hk].into_iter())
+        .chain([hk])
         .map(char_count)
-        .chain([24].into_iter())
+        .chain([24])
         .max()
         .unwrap();
     let right = 7.max(rows.iter().map(|(_, v)| char_count(v)).max().unwrap());
@@ -58,7 +59,7 @@ pub trait Day<'a>: Sized {
     fn part_1(&self) -> Self::T1;
     fn part_2(&self) -> Self::T2;
 
-    fn run(year: u16, n: u8, input: &'a str) -> u128 {
+    fn run(title: &'a str, input: &'a str) -> u128 {
         let (day, parse_duration) = time(|| Self::new(input));
 
         let (output_1, part_1_duration) = time(|| day.part_1());
@@ -67,10 +68,7 @@ pub trait Day<'a>: Sized {
         let total = parse_duration + part_1_duration + part_2_duration;
 
         print_table(
-            (
-                &format!("{} Day {}: {}", year, n, get_title(year, n).unwrap()),
-                &format_duration(total),
-            ),
+            (title, &format_duration(total)),
             &[
                 ("Parse  :", &format_duration(parse_duration)),
                 (&format!("Part 1 : {}", output_1), &format_duration(part_1_duration)),

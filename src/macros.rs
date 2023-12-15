@@ -36,7 +36,7 @@ pub fn year(token_stream: TokenStream) -> TokenStream {
         (1..=25u8)
             .map(|n| Some(n).filter(|_| implemented_days.contains(&n)))
             .map(|day| day
-                .map(|n| format!("Some(|y, i| {{day{0:02}::Day{0:02}::run(y, {0}, i)}}),", n))
+                .map(|n| format!("Some(|title, input| {{day{0:02}::Day{0:02}::run(title, input)}}),", n))
                 .unwrap_or_else(|| "None,".to_string()))
             .collect::<String>()
     )

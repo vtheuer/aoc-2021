@@ -8,6 +8,7 @@ use std::str::FromStr;
 use colored::*;
 use fnv::FnvHashMap;
 
+use crate::client::Client;
 use util::parse_arg;
 use year_2020::YEAR_2020;
 use year_2021::YEAR_2021;
@@ -19,6 +20,7 @@ use crate::util::format_duration;
 use crate::util::NumArg::{Last, Nth};
 use crate::year::Year;
 
+mod client;
 mod day;
 mod util;
 mod year;
@@ -36,17 +38,18 @@ fn main() {
             .unwrap_or_else(|| panic!("year {} not found", y)),
         Last => years.iter().last().unwrap(),
     };
+    let client = Client::new();
 
     match &env::args().skip(1).collect::<Vec<_>>()[..] {
         [y, d] => {
-            get_year(y).run_day_by_number(parse_arg("day", d));
+            get_year(y).run_day_by_number(parse_arg("day", d), &client);
         }
         [y] => {
-            get_year(y).run();
+            get_year(y).run(&client);
         }
         [] => {
             for year in years {
-                year.run()
+                year.run(&client)
             }
         }
         _ => panic!("Usage: aoc [YEAR] [DAY]"),
