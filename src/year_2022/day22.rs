@@ -2,6 +2,7 @@ use Direction::*;
 use Instruction::*;
 
 use crate::day::Day;
+use crate::util::FindIndex;
 
 #[derive(Copy, Clone, Debug)]
 enum Instruction {
@@ -100,15 +101,7 @@ impl Day22 {
     }
 
     fn navigate(&self, wrap: WrapFn) -> usize {
-        let mut position = (
-            self.map[0]
-                .iter()
-                .enumerate()
-                .find(|&(_, &c)| c == Some(false))
-                .map(|(i, _)| i)
-                .unwrap(),
-            0,
-        );
+        let mut position = (self.map[0].iter().find_index(&Some(false)).unwrap(), 0);
         let mut direction = Right;
 
         for instruction in &self.instructions {

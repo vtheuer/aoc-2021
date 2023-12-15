@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::FindIndex;
 use std::str::from_utf8;
 
 pub struct Day15<'a> {
@@ -27,7 +28,7 @@ impl<'a> Day<'a> for Day15<'a> {
         self.strings
             .iter()
             .map(|s| {
-                let (i, &action) = s.iter().enumerate().find(|&(_, &b)| b == b'-' || b == b'=').unwrap();
+                let (i, &action) = s.iter().find_index_by(|&&b| b == b'-' || b == b'=').unwrap();
                 (
                     &s[0..i],
                     action,
@@ -36,7 +37,7 @@ impl<'a> Day<'a> for Day15<'a> {
             })
             .fold(vec![Vec::new(); 256], |mut boxes, (label, action, focal)| {
                 let b = &mut boxes[hash(label)];
-                let lens_index = b.iter().enumerate().find(|&(_, &(l, _))| l == label).map(|(i, _)| i);
+                let lens_index = b.iter().find_index_by(|&&(l, _)| l == label).map(|(i, _)| i);
                 if action == b'-' {
                     if let Some(i) = lens_index {
                         b.remove(i);

@@ -3,7 +3,7 @@ use std::fmt::Display;
 use std::io::Read;
 
 use crate::day::Day;
-use crate::util::Joinable;
+use crate::util::{FindIndex, Joinable};
 
 const WIDTH: u8 = 7;
 
@@ -74,9 +74,7 @@ where
 
 fn get_highest_block(grid: &[u8]) -> usize {
     grid.iter()
-        .enumerate()
-        .rev()
-        .find(|&(_, &row)| row > 0)
+        .rfind_index_by(|&&row| row > 0)
         .map(|(i, _)| i + 1)
         .unwrap_or(0)
 }

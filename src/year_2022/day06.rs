@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::FindIndex;
 use std::convert::identity;
 
 pub struct Day06<'a> {
@@ -10,8 +11,7 @@ impl<'a> Day06<'a> {
         self.input
             .as_bytes()
             .windows(len)
-            .enumerate()
-            .find(|&(_, w)| {
+            .find_index_by(|&w| {
                 w.iter()
                     .scan(0u32, |seen, b| {
                         let i = 1 << (b - b'a') as usize;

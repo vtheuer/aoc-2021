@@ -1,5 +1,5 @@
 use crate::day::Day;
-use crate::util::SortableByKey;
+use crate::util::{FindIndex, SortableByKey};
 
 pub struct Day01 {
     elves: Vec<usize>,
@@ -26,7 +26,7 @@ impl Day<'_> for Day01 {
         self.elves
             .iter()
             .fold(&mut vec![0, 0, 0], |top3, &c| {
-                if let Some((i, _)) = top3.iter().enumerate().find(|&(_, &top)| c > top) {
+                if let Some((i, _)) = top3.iter().find_index_by(|&&top| c > top) {
                     top3[i..].rotate_right(1);
                     top3[i] = c;
                 }

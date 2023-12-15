@@ -76,6 +76,44 @@ where
     }
 }
 
+pub trait FindIndex<I> {
+    fn find_index_by<P>(self, predicate: P) -> Option<(usize, I)>
+    where
+        P: FnMut(&I) -> bool;
+
+    fn rfind_index_by<P>(self, predicate: P) -> Option<(usize, I)>
+    where
+        P: FnMut(&I) -> bool,
+        Self: DoubleEndedIterator + ExactSizeIterator;
+
+    fn find_index(self, value: I) -> Option<usize>
+    where
+        Self: Sized,
+        I: PartialEq,
+    {
+        self.find_index_by(|v| *v == value).map(|(i, _)| i)
+    }
+}
+impl<I, S> FindIndex<I> for S
+where
+    S: Iterator<Item = I>,
+{
+    fn find_index_by<P>(self, mut predicate: P) -> Option<(usize, I)>
+    where
+        P: FnMut(&I) -> bool,
+    {
+        self.enumerate().find(|(_, e)| predicate(e))
+    }
+
+    fn rfind_index_by<P>(self, mut predicate: P) -> Option<(usize, I)>
+    where
+        P: FnMut(&I) -> bool,
+        Self: DoubleEndedIterator + ExactSizeIterator,
+    {
+        self.enumerate().rev().find(|(_, e)| predicate(e))
+    }
+}
+
 const AUTHOR: &str = env!("CARGO_PKG_AUTHORS");
 
 fn first_line(s: &str) -> &str {

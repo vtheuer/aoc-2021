@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::FindIndex;
 
 pub struct Day23 {
     numbers: Vec<u8>,
@@ -29,9 +30,7 @@ fn play(initial: &[u8], cup_count: usize, turns: usize) -> impl Iterator<Item = 
 
         let destination_index = numbers
             .iter()
-            .enumerate()
-            .find(|&(_, &n)| n == destination)
-            .map(|(i, _)| i)
+            .find_index(&destination)
             .unwrap_or_else(|| panic!("{} not found in {:?}", destination, numbers));
         for (i, n) in pickup.into_iter().enumerate() {
             numbers.insert(destination_index + i + 1, n);
@@ -39,18 +38,12 @@ fn play(initial: &[u8], cup_count: usize, turns: usize) -> impl Iterator<Item = 
 
         current = numbers
             .iter()
-            .enumerate()
-            .find(|&(_, &n)| n == current_value)
-            .map(|(i, _)| (i + 1) % numbers.len())
+            .find_index(&current_value)
+            .map(|i| (i + 1) % numbers.len())
             .unwrap();
     }
 
-    let index_of_1 = numbers
-        .iter()
-        .enumerate()
-        .find(|&(_, &n)| n == 1)
-        .map(|(i, _)| i)
-        .unwrap();
+    let index_of_1 = numbers.iter().find_index(&1).unwrap();
 
     let len = numbers.len();
     (0..initial.len() - 1)

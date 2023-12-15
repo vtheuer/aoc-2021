@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::FindIndex;
 
 pub struct Day20 {
     numbers: Vec<isize>,
@@ -29,20 +30,14 @@ fn shift_all(nums: &[isize], times: usize) -> isize {
         for i in 0..len {
             let (current_index, _) = numbers
                 .iter()
-                .enumerate()
-                .find(|&(_, &(initial_index, _))| initial_index == i)
+                .find_index_by(|&&(initial_index, _)| initial_index == i)
                 .unwrap();
             let n = numbers[current_index].1;
             shift(&mut numbers, current_index, n);
         }
     }
 
-    let index_of_0 = numbers
-        .iter()
-        .enumerate()
-        .find(|&(_, &(_, v))| v == 0)
-        .map(|(i, _)| i)
-        .unwrap();
+    let index_of_0 = numbers.iter().find_index_by(|&&(_, v)| v == 0).map(|(i, _)| i).unwrap();
 
     numbers[(index_of_0 + 1000) % len].1 + numbers[(index_of_0 + 2000) % len].1 + numbers[(index_of_0 + 3000) % len].1
 }
