@@ -13,4 +13,5 @@ Cargo.lock
 /.idea
 *.iml
 .session
+.titles.json
 inputs

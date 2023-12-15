@@ -1,7 +1,7 @@
 use std::time::Instant;
 
-use crate::util::format_duration;
 use crate::util::Joinable;
+use crate::util::{format_duration, get_title};
 use colored::*;
 use std::fmt::Display;
 
@@ -29,7 +29,14 @@ fn format_row(k: &str, v: &str, left: usize, right: usize, header: bool) -> Stri
 }
 
 fn print_table((hk, hv): (&str, &str), rows: &[(&str, &str)]) {
-    let left = 24.max(rows.iter().map(|(k, _)| char_count(k)).max().unwrap());
+    let left = rows
+        .iter()
+        .map(|&(k, _)| k)
+        .chain([hk].into_iter())
+        .map(char_count)
+        .chain([24].into_iter())
+        .max()
+        .unwrap();
     let right = 7.max(rows.iter().map(|(_, v)| char_count(v)).max().unwrap());
 
     println!(
@@ -60,7 +67,10 @@ pub trait Day<'a>: Sized {
         let total = parse_duration + part_1_duration + part_2_duration;
 
         print_table(
-            (&format!("{} Day {}", year, n), &format_duration(total)),
+            (
+                &format!("{} Day {}: {}", year, n, get_title(year, n).unwrap()),
+                &format_duration(total),
+            ),
             &[
                 ("Parse  :", &format_duration(parse_duration)),
                 (&format!("Part 1 : {}", output_1), &format_duration(part_1_duration)),

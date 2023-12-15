@@ -1,5 +1,7 @@
 use crate::util::NumArg::{Last, Nth};
 use num::Num;
+use regex::Regex;
+use std::collections::HashMap;
 use std::env;
 use std::fmt::Display;
 use std::fs::{create_dir_all, read_to_string, write};
@@ -120,6 +122,23 @@ fn first_line(s: &str) -> &str {
     s.lines().next().unwrap()
 }
 
+fn fetch(url: &str) -> anyhow::Result<String> {
+    Ok(Client::new()
+        .get(url)
+        .header(
+            COOKIE,
+            format!(
+                "session={}",
+                first_line(
+                    &read_to_string(".session").expect("please provide a session token in a file named .session")
+                )
+            ),
+        )
+        .header(USER_AGENT, format!("my own rust runner by {}", AUTHOR))
+        .send()?
+        .text()?)
+}
+
 pub fn get_input(year: u16, day: u8) -> anyhow::Result<String> {
     let dir = format!("inputs/{}", year);
     create_dir_all(&dir).unwrap_or_else(|_| panic!("could not create directory {}", &dir));
@@ -130,20 +149,7 @@ pub fn get_input(year: u16, day: u8) -> anyhow::Result<String> {
         Ok(read_to_string(input_file)?)
     } else {
         println!("Fetching input for day {}...", day);
-        let input = Client::new()
-            .get(format!("https://adventofcode.com/{}/day/{}/input", year, day))
-            .header(
-                COOKIE,
-                format!(
-                    "session={}",
-                    first_line(
-                        &read_to_string(".session").expect("please provide a session token in a file named .session")
-                    )
-                ),
-            )
-            .header(USER_AGENT, format!("my own rust runner by {}", AUTHOR))
-            .send()?
-            .text()?;
+        let input = fetch(&format!("https://adventofcode.com/{}/day/{}/input", year, day))?;
         assert_ne!(
             first_line(&input),
             "Puzzle inputs differ by user.  Please log in to get your puzzle input.",
@@ -151,5 +157,34 @@ pub fn get_input(year: u16, day: u8) -> anyhow::Result<String> {
         );
         write(input_file, &input)?;
         Ok(input)
+    }
+}
+
+pub fn get_title(year: u16, day: u8) -> anyhow::Result<String> {
+    let titles_file = ".titles.json";
+
+    let mut titles: HashMap<u16, HashMap<u8, String>> = Some(titles_file)
+        .map(Path::new)
+        .filter(|path| path.exists())
+        .map(|path| read_to_string(path).expect("Could not read .titles.json"))
+        .map(|json| serde_json::from_str(&json).expect(".titles.json does not contain valid json"))
+        .unwrap_or_default();
+
+    if let Some(title) = titles.get(&year).and_then(|days| days.get(&day)) {
+        Ok(title.clone())
+    } else {
+        println!("Fetching title for day {}...", day);
+        let html = fetch(&format!("https://adventofcode.com/{}/day/{}", year, day))?;
+        let re = Regex::new("<h2>--- Day \\d+: ([^-]+) ---</h2>").unwrap();
+        let title = re
+            .captures(&html)
+            .expect("couldn't find day title in html")
+            .get(1)
+            .unwrap()
+            .as_str()
+            .to_string();
+        titles.entry(year).or_default().insert(day, title.clone());
+        write(titles_file, serde_json::to_string(&titles)?)?;
+        Ok(title)
     }
 }
