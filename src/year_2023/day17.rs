@@ -1,20 +1,16 @@
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, BinaryHeap};
-use std::convert::identity;
+use std::collections::{BinaryHeap, HashMap};
 use std::hash::{Hash, Hasher};
-
-use fnv::FnvHashMap;
 
 use Direction::*;
 
 use crate::day::Day;
-use crate::util::Joinable;
 
 pub struct Day17 {
     grid: Vec<Vec<u8>>,
 }
 
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Debug, Hash)]
+#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
 enum Direction {
     Up,
     Right,
@@ -40,22 +36,9 @@ impl Direction {
             Left => (x - 1, y),
         }
     }
-
-    fn mask(&self, straight: u8) -> u16 {
-        if straight > 2 {
-            panic!()
-        }
-        let shift = match self {
-            Up => 0,
-            Right => 4,
-            Down => 8,
-            Left => 12,
-        };
-        (1 << shift) | (1 << straight)
-    }
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Eq)]
 struct State {
     x: usize,
     y: usize,
@@ -77,8 +60,6 @@ impl PartialEq<Self> for State {
     }
 }
 
-impl Eq for State {}
-
 impl Hash for State {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.x.hash(state);
@@ -90,7 +71,10 @@ impl Hash for State {
 
 impl Ord for State {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.heat_loss.cmp(&other.heat_loss).reverse()
+        self.heat_loss
+            .cmp(&other.heat_loss)
+            .reverse()
+            .then_with(|| (self.x + self.y).cmp(&(other.x + other.y)))
     }
 }
 
@@ -132,7 +116,7 @@ impl Day17 {
         }
     }
 
-    fn turn_left(&self, state: &State) -> Option<State> {
+    fn turn_left(&self, state: &State, min_straight: u8) -> Option<State> {
         self.turn(
             state,
             match state.direction {
@@ -141,10 +125,11 @@ impl Day17 {
                 Down => Right,
                 Left => Down,
             },
+            min_straight,
         )
     }
 
-    fn turn_right(&self, state: &State) -> Option<State> {
+    fn turn_right(&self, state: &State, min_straight: u8) -> Option<State> {
         self.turn(
             state,
             match state.direction {
@@ -153,6 +138,7 @@ impl Day17 {
                 Down => Left,
                 Left => Up,
             },
+            min_straight,
         )
     }
 
@@ -161,12 +147,17 @@ impl Day17 {
         &State {
             x,
             y,
-            straight: _,
+            straight,
             direction: _,
             heat_loss,
         }: &State,
         direction: Direction,
+        min_straight: u8,
     ) -> Option<State> {
+        if straight < min_straight {
+            return None;
+        }
+
         let width = self.grid[0].len() as isize;
         let height = self.grid.len() as isize;
         let (nx, ny) = direction.apply((x as isize, y as isize));
@@ -183,23 +174,22 @@ impl Day17 {
         }
     }
 
-    fn neighbors<'a>(&self, state: &'a State, max_straight: u8) -> impl Iterator<Item = State> + 'a {
+    fn neighbors<'a>(&self, state: &'a State, min_straight: u8, max_straight: u8) -> impl Iterator<Item = State> + 'a {
         vec![
             self.forward(state, max_straight),
-            self.turn_right(state),
-            self.turn_left(state),
+            self.turn_right(state, min_straight),
+            self.turn_left(state, min_straight),
         ]
         .into_iter()
         .flatten()
     }
 
-    fn shortest_path(&self, max_straight: u8) -> usize {
+    fn shortest_path(&self, min_straight: u8, max_straight: u8) -> usize {
         let width = self.grid[0].len();
         let height = self.grid.len();
 
         let mut queue = BinaryHeap::new();
-        let mut prev: FnvHashMap<State, State> = FnvHashMap::default();
-        let mut heat_losses: FnvHashMap<State, usize> = FnvHashMap::default();
+        let mut heat_losses: HashMap<State, usize> = HashMap::default();
 
         queue.push(State {
             x: 0,
@@ -217,29 +207,7 @@ impl Day17 {
         });
 
         while let Some(current) = queue.pop() {
-            if current.x == width - 1 && current.y == height - 1 {
-                let mut result = self
-                    .grid
-                    .iter()
-                    .map(|row| row.iter().map(|&c| b'0' + c).collect::<Vec<_>>())
-                    .collect::<Vec<_>>();
-                let mut c = &current;
-                while let Some(p) = prev.get(c) {
-                    result[p.y][p.x] = match p.direction {
-                        Up => b'^',
-                        Right => b'>',
-                        Down => b'v',
-                        Left => b'<',
-                    };
-                    c = p;
-                }
-                println!(
-                    "{}",
-                    result
-                        .into_iter()
-                        .map(|row| row.into_iter().map(|c| c as char).collect::<String>())
-                        .join("\n")
-                );
+            if current.x == width - 1 && current.y == height - 1 && current.straight >= min_straight {
                 return current.heat_loss;
             }
 
@@ -247,14 +215,13 @@ impl Day17 {
                 continue;
             }
 
-            for mut neighbor in self.neighbors(&current, max_straight) {
+            for mut neighbor in self.neighbors(&current, min_straight, max_straight) {
                 let new_heat_loss = current.heat_loss + self.grid[neighbor.y][neighbor.x] as usize;
                 let neighbor_heat_loss = heat_losses.entry(neighbor).or_insert(usize::MAX);
 
                 if new_heat_loss < *neighbor_heat_loss {
                     *neighbor_heat_loss = new_heat_loss;
                     neighbor.heat_loss = new_heat_loss;
-                    prev.insert(neighbor, current);
                     queue.push(neighbor);
                 }
             }
@@ -275,23 +242,10 @@ impl Day<'_> for Day17 {
     }
 
     fn part_1(&self) -> Self::T1 {
-        self.shortest_path(3)
+        self.shortest_path(1, 3)
     }
 
     fn part_2(&self) -> Self::T2 {
-        0
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test() {
-        let input = "112999
-911111";
-
-        dbg!(Day17::new(input).part_1());
+        self.shortest_path(4, 10)
     }
 }
