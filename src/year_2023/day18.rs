@@ -5,32 +5,16 @@ use fnv::FnvHashSet;
 use Direction::*;
 
 use crate::day::Day;
+use crate::util::direction::Direction;
+use crate::util::direction::Direction::*;
+use crate::util::grid::Grid;
 use crate::util::Joinable;
-
-#[derive(Copy, Clone, Debug)]
-enum Direction {
-    Up,
-    Right,
-    Down,
-    Left,
-}
-
-impl Direction {
-    fn apply(&self, (x, y): (isize, isize)) -> (isize, isize) {
-        match self {
-            Up => (x, y - 1),
-            Right => (x + 1, y),
-            Down => (x, y + 1),
-            Left => (x - 1, y),
-        }
-    }
-}
 
 pub struct Day18<'a> {
     instructions: Vec<(Direction, u8, &'a [u8])>,
 }
 
-fn make_grid(instructions: Vec<(Direction, usize)>) -> Vec<Vec<bool>> {
+fn make_grid(instructions: Vec<(Direction, usize)>) -> Grid<bool> {
     let mut dug = FnvHashSet::from_iter([(0, 0)]);
     let mut p = (0, 0);
     for (direction, distance) in instructions {
@@ -45,11 +29,9 @@ fn make_grid(instructions: Vec<(Direction, usize)>) -> Vec<Vec<bool>> {
         |(min_x, max_x, min_y, max_y), &(x, y)| (min_x.min(x), max_x.max(x), min_y.min(y), max_y.max(y)),
     );
 
-    dbg!(min_x, max_x, min_y, max_y);
-
-    let mut grid = vec![vec![false; (max_x - min_x + 1) as usize]; (max_y - min_y + 1) as usize];
+    let mut grid = Grid::init((max_x - min_x + 1) as usize, (max_y - min_y + 1) as usize, false);
     for (x, y) in dug {
-        grid[(y - min_y) as usize][(x - min_x) as usize] = true;
+        grid[((x - min_x) as usize, (y - min_y) as usize)] = true;
     }
 
     grid
@@ -64,27 +46,28 @@ fn print(grid: &[Vec<bool>]) {
     );
 }
 
-fn find_start(grid: &[Vec<bool>]) -> (usize, usize) {
-    let mut x = grid[0]
+fn find_start(grid: &Grid<bool>) -> (usize, usize) {
+    let mut x = grid
+        .row(0)
         .iter()
         .enumerate()
         .find(|&(_, &b)| b)
         .map(|(x, _)| x + 1)
         .unwrap();
-    while grid[1][x] {
+    while grid[(x, 1)] {
         x += 1;
     }
     (x, 1)
 }
 
-fn fill(grid: &mut [Vec<bool>]) {
+fn fill(grid: &mut Grid<bool>) {
     let mut queue = VecDeque::from_iter([find_start(grid)]);
 
     while let Some((x, y)) = queue.pop_front() {
-        grid[y][x] = true;
+        grid[(x, y)] = true;
         [(x, y - 1), (x + 1, y), (x, y + 1), (x - 1, y)]
             .into_iter()
-            .filter(|&(nx, ny)| !grid[ny][nx])
+            .filter(|&n| !grid[n])
             .filter(|n| !queue.contains(n))
             .collect::<Vec<_>>()
             .into_iter()
@@ -128,7 +111,7 @@ impl<'a> Day<'a> for Day18<'a> {
 
         fill(&mut grid);
 
-        grid.into_iter().map(|row| row.into_iter().filter(|&b| b).count()).sum()
+        grid.values().filter(|&&b| b).count()
     }
 
     fn part_2(&self) -> Self::T2 {
@@ -146,7 +129,7 @@ impl<'a> Day<'a> for Day18<'a> {
 
         fill(&mut grid);
 
-        grid.into_iter().map(|row| row.into_iter().filter(|&b| b).count()).sum()
+        grid.values().filter(|&&b| b).count()
     }
 }
 

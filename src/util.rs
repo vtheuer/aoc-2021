@@ -1,3 +1,6 @@
+pub mod direction;
+pub mod grid;
+
 use std::fmt::Display;
 use std::str::FromStr;
 use std::vec::IntoIter;

@@ -7,34 +7,8 @@ use Direction::*;
 use Pipe::*;
 
 use crate::day::Day;
-
-#[derive(Copy, Clone, Eq, PartialEq, Debug)]
-enum Direction {
-    N,
-    E,
-    S,
-    W,
-}
-
-impl Direction {
-    fn apply(&self, (x, y): (usize, usize)) -> (usize, usize) {
-        match self {
-            N => (x, y - 1),
-            E => (x + 1, y),
-            S => (x, y + 1),
-            W => (x - 1, y),
-        }
-    }
-
-    fn opposite(&self) -> Direction {
-        match self {
-            N => S,
-            E => W,
-            S => N,
-            W => E,
-        }
-    }
-}
+use crate::util::direction::Direction;
+use crate::util::grid::Grid;
 
 #[derive(Copy, Clone, Eq, PartialEq, Debug)]
 enum Pipe {
@@ -50,12 +24,12 @@ enum Pipe {
 impl Pipe {
     fn directions(&self) -> Option<(Direction, Direction)> {
         match self {
-            NE => Some((N, E)),
-            NS => Some((N, S)),
-            NW => Some((N, W)),
-            ES => Some((E, S)),
-            EW => Some((E, W)),
-            SW => Some((S, W)),
+            NE => Some((Up, Right)),
+            NS => Some((Up, Down)),
+            NW => Some((Up, Left)),
+            ES => Some((Right, Down)),
+            EW => Some((Right, Left)),
+            SW => Some((Down, Left)),
             None => Option::None,
         }
     }
@@ -80,7 +54,7 @@ impl Pipe {
 
 pub struct Day10 {
     start: (usize, usize),
-    grid: Vec<Vec<Pipe>>,
+    grid: Grid<Pipe>,
     path: Cell<Vec<(usize, usize)>>,
 }
 
@@ -126,9 +100,9 @@ impl Day<'_> for Day10 {
 
         let (sx, sy) = start;
         grid[sy][sx] = match (
-            grid[sy - 1][sx].connects_to(S),
-            grid[sy][sx + 1].connects_to(W),
-            grid[sy + 1][sx].connects_to(N),
+            grid[sy - 1][sx].connects_to(Down),
+            grid[sy][sx + 1].connects_to(Left),
+            grid[sy + 1][sx].connects_to(Up),
         ) {
             (true, true, false) => NE,
             (true, false, true) => NS,
@@ -141,23 +115,22 @@ impl Day<'_> for Day10 {
 
         Self {
             start,
-            grid,
+            grid: Grid::new(grid),
             path: Cell::new(Vec::new()),
         }
     }
 
     fn part_1(&self) -> Self::T1 {
         let (sx, sy) = self.start;
-        let (mut direction, mut current) = [N, E, S, W]
+        let (mut direction, mut current) = [Up, Right, Down, Left]
             .into_iter()
             .map(|d| (d, d.apply((sx, sy))))
-            .find(|&(d, (x, y))| self.grid[y][x].connects_to(d.opposite()))
+            .find(|&(d, i)| self.grid[i].connects_to(d.opposite()))
             .unwrap();
         let mut path = vec![current];
 
         while current != self.start {
-            let (x, y) = current;
-            direction = self.grid[y][x].next(direction.opposite());
+            direction = self.grid[current].next(direction.opposite());
             current = direction.apply(current);
             path.push(current);
         }
@@ -181,10 +154,10 @@ impl Day<'_> for Day10 {
                 (min_x..=max_x)
                     .scan((0, Option::None), |(crosses, previous_bend_direction), x| {
                         Some(if path_set.contains(&(x, y)) {
-                            match self.grid[y][x] {
+                            match self.grid[(x, y)] {
                                 NS => *crosses += 1,
-                                NE | NW => handle_bend((crosses, previous_bend_direction), N),
-                                ES | SW => handle_bend((crosses, previous_bend_direction), S),
+                                NE | NW => handle_bend((crosses, previous_bend_direction), Up),
+                                ES | SW => handle_bend((crosses, previous_bend_direction), Down),
                                 _ => {}
                             };
                             0

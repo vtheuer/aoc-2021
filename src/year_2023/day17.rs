@@ -2,40 +2,13 @@ use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap};
 use std::hash::{Hash, Hasher};
 
-use Direction::*;
-
 use crate::day::Day;
+use crate::util::direction::Direction;
+use crate::util::direction::Direction::*;
+use crate::util::grid::Grid;
 
 pub struct Day17 {
-    grid: Vec<Vec<u8>>,
-}
-
-#[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash)]
-enum Direction {
-    Up,
-    Right,
-    Down,
-    Left,
-}
-
-impl Direction {
-    fn opposite(&self) -> Self {
-        match self {
-            Up => Down,
-            Right => Left,
-            Down => Up,
-            Left => Right,
-        }
-    }
-
-    fn apply(&self, (x, y): (isize, isize)) -> (isize, isize) {
-        match self {
-            Up => (x, y - 1),
-            Right => (x + 1, y),
-            Down => (x, y + 1),
-            Left => (x - 1, y),
-        }
-    }
+    grid: Grid<u8>,
 }
 
 #[derive(Copy, Clone, Eq)]
@@ -96,50 +69,17 @@ impl Day17 {
         }: &State,
         max_straight: u8,
     ) -> Option<State> {
-        let width = self.grid[0].len() as isize;
-        let height = self.grid.len() as isize;
         if straight >= max_straight {
             None
         } else {
-            let (nx, ny) = direction.apply((x as isize, y as isize));
-            if (0..width).contains(&nx) && (0..height).contains(&ny) {
-                Some(State {
-                    x: nx as usize,
-                    y: ny as usize,
-                    straight: straight + 1,
-                    direction,
-                    heat_loss,
-                })
-            } else {
-                None
-            }
+            self.grid.next_index((x, y), direction).map(|(nx, ny)| State {
+                x: nx,
+                y: ny,
+                straight: straight + 1,
+                direction,
+                heat_loss,
+            })
         }
-    }
-
-    fn turn_left(&self, state: &State, min_straight: u8) -> Option<State> {
-        self.turn(
-            state,
-            match state.direction {
-                Up => Left,
-                Right => Up,
-                Down => Right,
-                Left => Down,
-            },
-            min_straight,
-        )
-    }
-
-    fn turn_right(&self, state: &State, min_straight: u8) -> Option<State> {
-        self.turn(
-            state,
-            match state.direction {
-                Up => Right,
-                Right => Down,
-                Down => Left,
-                Left => Up,
-            },
-            min_straight,
-        )
     }
 
     fn turn(
@@ -155,39 +95,29 @@ impl Day17 {
         min_straight: u8,
     ) -> Option<State> {
         if straight < min_straight {
-            return None;
-        }
-
-        let width = self.grid[0].len() as isize;
-        let height = self.grid.len() as isize;
-        let (nx, ny) = direction.apply((x as isize, y as isize));
-        if (0..width).contains(&nx) && (0..height).contains(&ny) {
-            Some(State {
-                x: nx as usize,
-                y: ny as usize,
+            None
+        } else {
+            self.grid.next_index((x, y), direction).map(|(nx, ny)| State {
+                x: nx,
+                y: ny,
                 straight: 1,
                 direction,
                 heat_loss,
             })
-        } else {
-            None
         }
     }
 
     fn neighbors<'a>(&self, state: &'a State, min_straight: u8, max_straight: u8) -> impl Iterator<Item = State> + 'a {
         vec![
             self.forward(state, max_straight),
-            self.turn_right(state, min_straight),
-            self.turn_left(state, min_straight),
+            self.turn(state, state.direction.turn_right(), min_straight),
+            self.turn(state, state.direction.turn_left(), min_straight),
         ]
         .into_iter()
         .flatten()
     }
 
     fn shortest_path(&self, min_straight: u8, max_straight: u8) -> usize {
-        let width = self.grid[0].len();
-        let height = self.grid.len();
-
         let mut queue = BinaryHeap::new();
         let mut heat_losses: HashMap<State, usize> = HashMap::default();
 
@@ -207,7 +137,8 @@ impl Day17 {
         });
 
         while let Some(current) = queue.pop() {
-            if current.x == width - 1 && current.y == height - 1 && current.straight >= min_straight {
+            if current.x == self.grid.width - 1 && current.y == self.grid.height - 1 && current.straight >= min_straight
+            {
                 return current.heat_loss;
             }
 
@@ -216,7 +147,7 @@ impl Day17 {
             }
 
             for mut neighbor in self.neighbors(&current, min_straight, max_straight) {
-                let new_heat_loss = current.heat_loss + self.grid[neighbor.y][neighbor.x] as usize;
+                let new_heat_loss = current.heat_loss + self.grid[(neighbor.x, neighbor.y)] as usize;
                 let neighbor_heat_loss = heat_losses.entry(neighbor).or_insert(usize::MAX);
 
                 if new_heat_loss < *neighbor_heat_loss {
@@ -237,7 +168,7 @@ impl Day<'_> for Day17 {
 
     fn new(input: &str) -> Self {
         Self {
-            grid: input.lines().map(|l| l.bytes().map(|b| b - b'0').collect()).collect(),
+            grid: Grid::parse(input, |b| b - b'0'),
         }
     }
 

@@ -1,25 +1,26 @@
 use crate::day::Day;
+use crate::util::grid::Grid;
 
 pub struct Day14 {
-    grid: Vec<Vec<Option<bool>>>,
+    grid: Grid<Option<bool>>,
 }
 
-fn tilt_north(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
-    let height = grid.len();
-    let width = grid[0].len();
-    let mut new_grid = vec![vec![None; width]; height];
+fn tilt_north(grid: &Grid<Option<bool>>) -> Grid<Option<bool>> {
+    let height = grid.height;
+    let width = grid.width;
+    let mut new_grid = Grid::init(width, height, None);
 
     for x in 0..width {
         let mut previous_rock = 0;
 
         for y in 0..height {
-            match grid[y][x] {
+            match grid[(x, y)] {
                 Some(true) => {
-                    new_grid[previous_rock][x] = Some(true);
+                    new_grid[(x, previous_rock)] = Some(true);
                     previous_rock += 1;
                 }
                 Some(false) => {
-                    new_grid[y][x] = Some(false);
+                    new_grid[(x, y)] = Some(false);
                     previous_rock = y + 1;
                 }
                 None => {}
@@ -30,22 +31,22 @@ fn tilt_north(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
     new_grid
 }
 
-fn tilt_south(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
-    let height = grid.len();
-    let width = grid[0].len();
-    let mut new_grid = vec![vec![None; width]; height];
+fn tilt_south(grid: &Grid<Option<bool>>) -> Grid<Option<bool>> {
+    let height = grid.height;
+    let width = grid.width;
+    let mut new_grid = Grid::init(width, height, None);
 
     for x in 0..width {
         let mut previous_rock = height - 1;
 
         for y in (0..height).rev() {
-            match grid[y][x] {
+            match grid[(x, y)] {
                 Some(true) => {
-                    new_grid[previous_rock][x] = Some(true);
+                    new_grid[(x, previous_rock)] = Some(true);
                     previous_rock = previous_rock.saturating_sub(1);
                 }
                 Some(false) => {
-                    new_grid[y][x] = Some(false);
+                    new_grid[(x, y)] = Some(false);
                     previous_rock = y.saturating_sub(1);
                 }
                 None => {}
@@ -56,22 +57,22 @@ fn tilt_south(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
     new_grid
 }
 
-fn tilt_west(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
-    let height = grid.len();
-    let width = grid[0].len();
-    let mut new_grid = vec![vec![None; width]; height];
+fn tilt_west(grid: &Grid<Option<bool>>) -> Grid<Option<bool>> {
+    let height = grid.height;
+    let width = grid.width;
+    let mut new_grid = Grid::init(width, height, None);
 
     for y in 0..height {
         let mut previous_rock = 0;
 
         for x in 0..width {
-            match grid[y][x] {
+            match grid[(x, y)] {
                 Some(true) => {
-                    new_grid[y][previous_rock] = Some(true);
+                    new_grid[(previous_rock, y)] = Some(true);
                     previous_rock += 1;
                 }
                 Some(false) => {
-                    new_grid[y][x] = Some(false);
+                    new_grid[(x, y)] = Some(false);
                     previous_rock = x + 1;
                 }
                 None => {}
@@ -82,22 +83,22 @@ fn tilt_west(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
     new_grid
 }
 
-fn tilt_east(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
-    let height = grid.len();
-    let width = grid[0].len();
-    let mut new_grid = vec![vec![None; width]; height];
+fn tilt_east(grid: &Grid<Option<bool>>) -> Grid<Option<bool>> {
+    let height = grid.height;
+    let width = grid.width;
+    let mut new_grid = Grid::init(width, height, None);
 
     for y in 0..height {
         let mut previous_rock = width - 1;
 
         for x in (0..width).rev() {
-            match grid[y][x] {
+            match grid[(x, y)] {
                 Some(true) => {
-                    new_grid[y][previous_rock] = Some(true);
+                    new_grid[(previous_rock, y)] = Some(true);
                     previous_rock = previous_rock.saturating_sub(1);
                 }
                 Some(false) => {
-                    new_grid[y][x] = Some(false);
+                    new_grid[(x, y)] = Some(false);
                     previous_rock = x.saturating_sub(1);
                 }
                 None => {}
@@ -108,13 +109,12 @@ fn tilt_east(grid: &[Vec<Option<bool>>]) -> Vec<Vec<Option<bool>>> {
     new_grid
 }
 
-fn get_load(grid: &[Vec<Option<bool>>]) -> usize {
-    let height = grid.len();
-    grid.iter()
+fn get_load(grid: &Grid<Option<bool>>) -> usize {
+    grid.rows()
         .enumerate()
         .map(|(y, row)| {
             row.iter()
-                .filter_map(|r| r.filter(|&rolls| rolls).and(Some(height - y)))
+                .filter_map(|r| r.filter(|&rolls| rolls).and(Some(grid.height - y)))
                 .sum::<usize>()
         })
         .sum()
@@ -148,17 +148,10 @@ impl Day<'_> for Day14 {
 
     fn new(input: &str) -> Self {
         Self {
-            grid: input
-                .lines()
-                .map(|l| {
-                    l.bytes()
-                        .map(|b| match b {
-                            b'.' => None,
-                            _ => Some(b == b'O'),
-                        })
-                        .collect()
-                })
-                .collect(),
+            grid: Grid::parse(input, |b| match b {
+                b'.' => None,
+                _ => Some(b == b'O'),
+            }),
         }
     }
 
