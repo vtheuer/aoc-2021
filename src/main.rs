@@ -6,8 +6,8 @@ use std::env;
 use std::str::FromStr;
 
 use colored::*;
-use fnv::FnvHashMap;
 
+use ahash::AHashMap;
 use util::parse_arg;
 use year_2020::YEAR_2020;
 use year_2021::YEAR_2021;
@@ -18,7 +18,6 @@ use crate::client::Client;
 use crate::day::Day;
 use crate::util::format_duration;
 use crate::util::NumArg::{Last, Nth};
-use crate::year::Year;
 
 mod client;
 mod day;

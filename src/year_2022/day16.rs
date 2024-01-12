@@ -1,7 +1,8 @@
 use std::borrow::Borrow;
 
-use fnv::FnvHashMap;
 use regex::Regex;
+
+use ahash::AHashMap;
 
 use crate::day::Day;
 
@@ -89,7 +90,7 @@ impl Day<'_> for Day16 {
 
     fn new(input: &str) -> Self {
         let re = Regex::new("^Valve (..) has flow rate=(\\d+); tunnels? leads? to valves? (.+)$").unwrap();
-        let valves = FnvHashMap::from_iter(
+        let valves = AHashMap::from_iter(
             input
                 .lines()
                 .map_while(|l| {

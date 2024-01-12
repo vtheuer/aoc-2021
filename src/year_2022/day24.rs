@@ -1,8 +1,7 @@
 use std::cell::Cell;
 use std::collections::VecDeque;
 
-use fnv::{FnvHashMap, FnvHashSet};
-
+use ahash::{AHashMap, AHashSet};
 use Direction::*;
 
 use crate::day::Day;
@@ -132,12 +131,12 @@ impl Day24 {
     }
 
     fn navigate(&self, start: (usize, usize), target: (usize, usize), start_time: usize) -> usize {
-        let mut cache: FnvHashMap<usize, Vec<Vec<u8>>> = FnvHashMap::default();
+        let mut cache: AHashMap<usize, Vec<Vec<u8>>> = AHashMap::default();
         let mut states = VecDeque::from([State {
             position: start,
             time: start_time,
         }]);
-        let mut visited = FnvHashSet::default();
+        let mut visited = AHashSet::default();
 
         while let Some(s) = states.pop_front() {
             let State { position: (x, y), time } = s;

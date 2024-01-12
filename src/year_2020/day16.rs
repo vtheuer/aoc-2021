@@ -1,6 +1,6 @@
 use std::cell::Cell;
 
-use fnv::FnvHashSet;
+use ahash::AHashSet;
 
 use crate::day::Day;
 
@@ -104,7 +104,7 @@ impl<'a> Day<'a> for Day16<'a> {
 
         possible_columns
             .into_iter()
-            .scan(FnvHashSet::default(), |used, (field, columns)| {
+            .scan(AHashSet::default(), |used, (field, columns)| {
                 let column = *columns.iter().find(|&c| !used.contains(c)).unwrap();
                 used.insert(column);
                 Some((field, self.my_ticket[column]))

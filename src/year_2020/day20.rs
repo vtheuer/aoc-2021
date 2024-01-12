@@ -1,5 +1,4 @@
-use fnv::FnvHashMap;
-
+use ahash::AHashMap;
 use Side::*;
 
 use crate::day::Day;
@@ -179,7 +178,7 @@ impl Tile {
 
 pub struct Day20 {
     tiles: Vec<Tile>,
-    // matches: FnvHashMap<usize, FnvHashMap<Side, (usize, Side, bool)>>,
+    // matches: AHashMap<usize, AHashMap<Side, (usize, Side, bool)>>,
 }
 
 fn format_tile(pixels: &[Vec<bool>]) -> String {
@@ -198,8 +197,8 @@ impl Day20 {
     }
 }
 
-fn print_r(r: &FnvHashMap<usize, ((i8, i8), u8, bool)>) {
-    let positions = r.iter().map(|(&i, &(p, _, _))| (p, i)).collect::<FnvHashMap<_, _>>();
+fn print_r(r: &AHashMap<usize, ((i8, i8), u8, bool)>) {
+    let positions = r.iter().map(|(&i, &(p, _, _))| (p, i)).collect::<AHashMap<_, _>>();
     let min_x = positions.keys().map(|&(x, _)| x).min().unwrap();
     let max_x = positions.keys().map(|&(x, _)| x).max().unwrap();
     let min_y = positions.keys().map(|&(_, y)| y).min().unwrap();
@@ -235,15 +234,15 @@ impl Day<'_> for Day20 {
             //     .flat_map(|(i, tile)| tiles.iter().skip(i + 1).map(move |other| (tile, other)))
             //     .filter_map(|(tile, other)| tile.matches(other).map(|m| (tile.id, other.id, m)))
             //     .fold(
-            //         FnvHashMap::default(),
+            //         AHashMap::default(),
             //         |mut matches, (tile_id, other_id, (tile_side, other_side, flipped))| {
             //             matches
             //                 .entry(tile_id)
-            //                 .or_insert_with(FnvHashMap::default)
+            //                 .or_insert_with(AHashMap::default)
             //                 .insert(tile_side, (other_id, other_side, flipped));
             //             matches
             //                 .entry(other_id)
-            //                 .or_insert_with(FnvHashMap::default)
+            //                 .or_insert_with(AHashMap::default)
             //                 .insert(other_side, (tile_id, tile_side, flipped));
             //             matches
             //         },
@@ -253,7 +252,7 @@ impl Day<'_> for Day20 {
     }
 
     fn part_1(&self) -> Self::T1 {
-        let mut r = FnvHashMap::default();
+        let mut r = AHashMap::default();
         r.insert(0, ((0, 0), 0, false));
         let mut to_find = vec![(0, Top), (0, Right), (0, Bottom), (0, Left)];
 

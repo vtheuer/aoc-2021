@@ -1,5 +1,4 @@
-use fnv::FnvHashMap;
-
+use ahash::AHashMap;
 use Line::*;
 
 use crate::day::Day;
@@ -50,7 +49,7 @@ impl Day<'_> for Day07 {
             .collect::<Vec<_>>();
         let root = String::from('/');
         let (_, tree) = lines.iter().fold(
-            (root.clone(), FnvHashMap::from_iter([(root.clone(), 0)].into_iter())),
+            (root.clone(), AHashMap::from_iter([(root.clone(), 0)].into_iter())),
             |(wd, mut tree), line| match line {
                 Cd(dir) => (
                     match dir.as_bytes()[0] {

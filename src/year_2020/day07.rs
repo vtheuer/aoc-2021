@@ -1,9 +1,9 @@
-use fnv::{FnvHashMap, FnvHashSet};
+use ahash::{AHashMap, AHashSet};
 
 use crate::day::Day;
 
 pub struct Day07<'a> {
-    rules: FnvHashMap<&'a str, FnvHashMap<&'a str, u32>>,
+    rules: AHashMap<&'a str, AHashMap<&'a str, u32>>,
 }
 
 impl Day07<'_> {
@@ -17,17 +17,17 @@ impl Day07<'_> {
     }
 }
 
-fn bags_containing<'a>(containers_by_bag: &FnvHashMap<&str, Vec<&'a str>>, bag: &str) -> FnvHashSet<&'a str> {
+fn bags_containing<'a>(containers_by_bag: &AHashMap<&str, Vec<&'a str>>, bag: &str) -> AHashSet<&'a str> {
     containers_by_bag
         .get(bag)
         .map(|bags| {
-            bags.iter().fold(FnvHashSet::default(), |mut containers, container| {
+            bags.iter().fold(AHashSet::default(), |mut containers, container| {
                 containers.insert(*container);
                 containers.extend(bags_containing(containers_by_bag, container));
                 containers
             })
         })
-        .unwrap_or_else(FnvHashSet::default)
+        .unwrap_or_else(AHashSet::default)
 }
 
 impl<'a> Day<'a> for Day07<'a> {
@@ -65,7 +65,7 @@ impl<'a> Day<'a> for Day07<'a> {
                 .rules
                 .iter()
                 .flat_map(|(container, content)| content.iter().map(move |(bag, _)| (*bag, *container)))
-                .fold(FnvHashMap::default(), |mut containers_by_bag, (bag, container)| {
+                .fold(AHashMap::default(), |mut containers_by_bag, (bag, container)| {
                     containers_by_bag.entry(bag).or_insert_with(Vec::new).push(container);
                     containers_by_bag
                 }),

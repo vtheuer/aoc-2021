@@ -1,7 +1,7 @@
 use std::cell::RefCell;
 use std::collections::VecDeque;
 
-use fnv::FnvHashSet;
+use ahash::AHashSet;
 
 use crate::day::Day;
 
@@ -23,7 +23,7 @@ impl Day09 {
     }
 
     fn basin_size(&self, origin: (usize, usize)) -> usize {
-        let mut basin: FnvHashSet<(usize, usize)> = FnvHashSet::from_iter([origin].into_iter());
+        let mut basin: AHashSet<(usize, usize)> = AHashSet::from_iter([origin].into_iter());
         let mut queue: VecDeque<(usize, usize)> = VecDeque::from([origin]);
 
         while !queue.is_empty() {

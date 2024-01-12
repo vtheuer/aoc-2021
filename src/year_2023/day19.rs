@@ -1,7 +1,7 @@
+use ahash::AHashMap;
+
 use crate::day::Day;
 use crate::year_2023::day19::RuleResult::{Accepted, Rejected, ToWorkflow};
-use fnv::FnvHashMap;
-use std::result;
 
 #[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq, Debug)]
 struct Condition {
@@ -139,7 +139,7 @@ impl Part {
 }
 
 pub struct Day19<'a> {
-    workflows: FnvHashMap<&'a str, Workflow<'a>>,
+    workflows: AHashMap<&'a str, Workflow<'a>>,
     parts: Vec<Part>,
 }
 
@@ -164,7 +164,7 @@ impl<'a> Day<'a> for Day19<'a> {
     fn new(input: &'a str) -> Self {
         let (workflows_str, parts_str) = input.split_once("\n\n").unwrap();
         Self {
-            workflows: FnvHashMap::from_iter(workflows_str.lines().map(|l| Workflow::parse(l)).map(|w| (w.name, w))),
+            workflows: AHashMap::from_iter(workflows_str.lines().map(|l| Workflow::parse(l)).map(|w| (w.name, w))),
             parts: parts_str.lines().map(|l| Part::parse(l)).collect(),
         }
     }

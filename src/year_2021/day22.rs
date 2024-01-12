@@ -1,6 +1,6 @@
 use std::cmp::min;
 
-use fnv::{FnvHashMap, FnvHashSet};
+use ahash::{AHashMap, AHashSet};
 
 use crate::day::Day;
 

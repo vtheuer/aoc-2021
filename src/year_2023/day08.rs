@@ -1,5 +1,6 @@
-use fnv::FnvHashMap;
 use num::Integer;
+
+use ahash::AHashMap;
 
 use crate::day::Day;
 use crate::year_2023::day08::Direction::{Left, Right};
@@ -12,7 +13,7 @@ enum Direction {
 
 pub struct Day08<'a> {
     directions: Vec<Direction>,
-    nodes: FnvHashMap<&'a str, (&'a str, &'a str)>,
+    nodes: AHashMap<&'a str, (&'a str, &'a str)>,
 }
 
 impl<'a> Day08<'a> {
@@ -46,7 +47,7 @@ impl<'a> Day<'a> for Day08<'a> {
                 .bytes()
                 .map(|d| if d == b'L' { Left } else { Right })
                 .collect(),
-            nodes: FnvHashMap::from_iter(nodes.lines().map(|l| {
+            nodes: AHashMap::from_iter(nodes.lines().map(|l| {
                 let (name, nexts) = l.split_once(" = ").unwrap();
                 (name, nexts[1..9].split_once(", ").unwrap())
             })),

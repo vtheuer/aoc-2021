@@ -1,4 +1,4 @@
-use fnv::FnvHashSet;
+use ahash::AHashSet;
 
 use crate::day::Day;
 use crate::util::Joinable;
@@ -15,7 +15,7 @@ fn move_node((hx, hy): (isize, isize), (tx, ty): (isize, isize)) -> (isize, isiz
     (tx + (hx - tx).signum(), ty + (hy - ty).signum())
 }
 
-fn print(seen: &FnvHashSet<(isize, isize)>, h: (isize, isize), t: (isize, isize)) {
+fn print(seen: &AHashSet<(isize, isize)>, h: (isize, isize), t: (isize, isize)) {
     let min_x = seen.iter().map(|&(x, _)| x).min().unwrap().min(h.0).min(t.0);
     let max_x = seen.iter().map(|&(x, _)| x).max().unwrap().max(h.0).max(t.0);
     let min_y = seen.iter().map(|&(_, y)| y).min().unwrap().min(h.1).min(t.1);
@@ -43,7 +43,7 @@ impl Day09 {
         self.moves
             .iter()
             .fold(
-                (vec![(0, 0); len], FnvHashSet::from_iter([(0, 0)].into_iter())),
+                (vec![(0, 0); len], AHashSet::from_iter([(0, 0)].into_iter())),
                 |(mut nodes, mut seen), &((dx, dy), n)| {
                     for _ in 0..n {
                         let head = &mut nodes[0];

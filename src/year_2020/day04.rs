@@ -1,4 +1,4 @@
-use fnv::FnvHashSet;
+use ahash::AHashSet;
 
 use crate::day::Day;
 
@@ -32,7 +32,7 @@ impl<'a> Day<'a> for Day04<'a> {
     fn part_2(&self) -> Self::T2 {
         let eye_colors = vec!["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
             .into_iter()
-            .collect::<FnvHashSet<_>>();
+            .collect::<AHashSet<_>>();
         self.passports
             .iter()
             .filter(|pairs| {

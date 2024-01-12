@@ -1,3 +1,4 @@
+use ahash::AHashMap;
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap};
 use std::hash::{Hash, Hasher};
@@ -119,7 +120,7 @@ impl Day17 {
 
     fn shortest_path(&self, min_straight: u8, max_straight: u8) -> usize {
         let mut queue = BinaryHeap::new();
-        let mut heat_losses: HashMap<State, usize> = HashMap::default();
+        let mut heat_losses: AHashMap<State, usize> = AHashMap::default();
 
         queue.push(State {
             x: 0,

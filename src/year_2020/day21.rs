@@ -1,11 +1,11 @@
-use fnv::{FnvHashMap, FnvHashSet};
+use ahash::{AHashMap, AHashSet};
 
 use crate::day::Day;
 use crate::util::{Joinable, SortableByKey};
 
 pub struct Day21<'a> {
-    recipes: Vec<(FnvHashSet<&'a str>, FnvHashSet<&'a str>)>,
-    allergenic_ingredients: FnvHashMap<&'a str, &'a str>,
+    recipes: Vec<(AHashSet<&'a str>, AHashSet<&'a str>)>,
+    allergenic_ingredients: AHashMap<&'a str, &'a str>,
 }
 
 impl<'a> Day<'a> for Day21<'a> {
@@ -23,12 +23,12 @@ impl<'a> Day<'a> for Day21<'a> {
                 ))
             })
             .map(Option::unwrap)
-            .collect::<Vec<(FnvHashSet<_>, FnvHashSet<_>)>>();
+            .collect::<Vec<(AHashSet<_>, AHashSet<_>)>>();
         Day21 {
             allergenic_ingredients: recipes
                 .iter()
                 .flat_map(|(_, allergens)| allergens.iter())
-                .collect::<FnvHashSet<_>>()
+                .collect::<AHashSet<_>>()
                 .into_iter()
                 .map(|&allergen| {
                     (
@@ -37,7 +37,7 @@ impl<'a> Day<'a> for Day21<'a> {
                             .iter()
                             .filter(|(_, a)| a.contains(&allergen))
                             .map(|(i, _)| i)
-                            .fold(FnvHashSet::default(), |common, ingredients| {
+                            .fold(AHashSet::default(), |common, ingredients| {
                                 if common.is_empty() {
                                     ingredients.clone()
                                 } else {
@@ -47,7 +47,7 @@ impl<'a> Day<'a> for Day21<'a> {
                     )
                 })
                 .sorted_unstable_by_key(|(_, possible_ingredients)| possible_ingredients.len())
-                .fold(FnvHashMap::default(), |mut r, (allergen, possible_ingredients)| {
+                .fold(AHashMap::default(), |mut r, (allergen, possible_ingredients)| {
                     r.insert(
                         possible_ingredients.into_iter().find(|i| !r.contains_key(i)).unwrap(),
                         allergen,
@@ -63,7 +63,7 @@ impl<'a> Day<'a> for Day21<'a> {
             .iter()
             .flat_map(|(ingredients, _)| ingredients.iter())
             .filter(|&&ingredient| !self.allergenic_ingredients.contains_key(ingredient))
-            .fold(FnvHashMap::default(), |mut counts, &ingredient| {
+            .fold(AHashMap::default(), |mut counts, &ingredient| {
                 *counts.entry(ingredient).or_insert(0) += 1;
                 counts
             })

@@ -2,7 +2,7 @@ use std::cell::Cell;
 use std::cmp::Ordering::{Equal, Greater, Less};
 use std::collections::VecDeque;
 
-use fnv::FnvHashSet;
+use ahash::AHashSet;
 
 use crate::day::Day;
 
@@ -49,7 +49,7 @@ impl<'a> Day<'a> for Day12<'a> {
         let mut caves = input
             .lines()
             .flat_map(|l| l.split('-'))
-            .collect::<FnvHashSet<_>>()
+            .collect::<AHashSet<_>>()
             .into_iter()
             .collect::<Vec<_>>();
         caves.sort_unstable();

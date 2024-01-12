@@ -1,4 +1,4 @@
-use fnv::FnvHashMap;
+use ahash::AHashMap;
 
 use crate::day::Day;
 
@@ -70,7 +70,7 @@ impl Day23 {
 
         for r in 0..max_rounds {
             elves = expand(elves);
-            let new_positions: FnvHashMap<(usize, usize), (usize, usize)> = FnvHashMap::from_iter(
+            let new_positions: AHashMap<(usize, usize), (usize, usize)> = AHashMap::from_iter(
                 elves_iter(&elves)
                     .filter_map(|(x, y)| {
                         if has_no_neighbors(&elves, (x, y)) {
@@ -92,8 +92,8 @@ impl Day23 {
                         }
                     })
                     .fold(
-                        FnvHashMap::default(),
-                        |mut new_positions: FnvHashMap<(usize, usize), Option<(usize, usize)>>, (elf, new_position)| {
+                        AHashMap::default(),
+                        |mut new_positions: AHashMap<(usize, usize), Option<(usize, usize)>>, (elf, new_position)| {
                             new_positions
                                 .entry(new_position)
                                 .and_modify(|e| *e = None)

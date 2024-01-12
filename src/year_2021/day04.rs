@@ -1,6 +1,6 @@
 use std::cell::Cell;
 
-use fnv::FnvHashSet;
+use ahash::AHashSet;
 
 use crate::day::Day;
 
@@ -101,12 +101,12 @@ impl Day<'_> for Day04 {
         let boards = self.boards.iter().map(|board| Board::new(board)).collect::<Vec<_>>();
         self.numbers
             .iter()
-            .scan(FnvHashSet::from_iter(0..boards.len()), |indices, &n| {
+            .scan(AHashSet::from_iter(0..boards.len()), |indices, &n| {
                 let remaining_indices = indices
                     .iter()
                     .copied()
                     .filter(|&i| !boards[i].play_and_wins(n))
-                    .collect::<FnvHashSet<_>>();
+                    .collect::<AHashSet<_>>();
 
                 if remaining_indices.is_empty() {
                     Some(Some(boards[*indices.iter().next().unwrap()].score(n)))

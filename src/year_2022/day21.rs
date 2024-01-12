@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
-use fnv::{FnvBuildHasher, FnvHashMap, FnvHashSet};
-
+use ahash::{AHashMap, AHashSet};
 use Monkey::*;
 use Operator::*;
 
@@ -65,7 +64,7 @@ enum Monkey<'a> {
 }
 
 impl<'a> Monkey<'a> {
-    fn compute(&self, monkeys: &FnvHashMap<&'a str, Monkey<'a>>) -> isize {
+    fn compute(&self, monkeys: &AHashMap<&'a str, Monkey<'a>>) -> isize {
         match self {
             Value(n) => *n,
             Operation(a, op, b) => op.apply(monkeys[a].compute(monkeys), monkeys[b].compute(monkeys)),
@@ -74,7 +73,7 @@ impl<'a> Monkey<'a> {
 }
 
 pub struct Day21<'a> {
-    monkeys: FnvHashMap<&'a str, Monkey<'a>>,
+    monkeys: AHashMap<&'a str, Monkey<'a>>,
 }
 
 impl<'a> Day21<'a> {
@@ -82,8 +81,8 @@ impl<'a> Day21<'a> {
         self.monkeys[m].compute(&self.monkeys)
     }
 
-    fn humn_ancestors(&self, first: &'a str, second: &'a str) -> HashSet<&str, FnvBuildHasher> {
-        let mut parents = FnvHashMap::default();
+    fn humn_ancestors(&self, first: &'a str, second: &'a str) -> AHashSet<&str> {
+        let mut parents = AHashMap::default();
         let mut queue = vec![first];
         let mut found = false;
         while let Some(parent) = queue.pop() {
@@ -105,7 +104,7 @@ impl<'a> Day21<'a> {
 
         if found {
             let mut p = HUMN;
-            let mut humn_ancestors = FnvHashSet::default();
+            let mut humn_ancestors = AHashSet::default();
             while let Some(&parent) = parents.get(p) {
                 humn_ancestors.insert(parent);
                 p = parent;
@@ -126,7 +125,7 @@ impl<'a> Day<'a> for Day21<'a> {
 
     fn new(input: &'a str) -> Self {
         Self {
-            monkeys: FnvHashMap::from_iter(input.lines().map_while(|l| {
+            monkeys: AHashMap::from_iter(input.lines().map_while(|l| {
                 let (k, v) = l.split_once(": ")?;
                 Some((
                     k,

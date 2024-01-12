@@ -1,5 +1,4 @@
-use fnv::FnvHashMap;
-
+use ahash::AHashMap;
 use Instruction::*;
 
 use crate::day::Day;
@@ -88,7 +87,7 @@ impl Day<'_> for Day14 {
         self.instructions
             .iter()
             .fold(
-                (FnvHashMap::default(), vec![]),
+                (AHashMap::default(), vec![]),
                 |(mut memory, mask), instruction| match instruction {
                     Mask(m) => (
                         memory,
@@ -116,7 +115,7 @@ impl Day<'_> for Day14 {
         self.instructions
             .iter()
             .fold(
-                (FnvHashMap::default(), &vec![]),
+                (AHashMap::default(), &vec![]),
                 |(mut memory, mask), instruction| match instruction {
                     Mask(m) => (memory, m),
                     Mem(address, value) => {

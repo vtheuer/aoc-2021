@@ -1,7 +1,6 @@
 use std::collections::VecDeque;
 
-use fnv::FnvHashSet;
-
+use ahash::AHashSet;
 use Direction::*;
 
 use crate::day::Day;
@@ -15,7 +14,7 @@ pub struct Day18<'a> {
 }
 
 fn make_grid(instructions: Vec<(Direction, usize)>) -> Grid<bool> {
-    let mut dug = FnvHashSet::from_iter([(0, 0)]);
+    let mut dug = AHashSet::from_iter([(0, 0)]);
     let mut p = (0, 0);
     for (direction, distance) in instructions {
         for _ in 0..distance {
@@ -115,6 +114,8 @@ impl<'a> Day<'a> for Day18<'a> {
     }
 
     fn part_2(&self) -> Self::T2 {
+        return 0;
+
         let mut grid = make_grid(
             self.instructions
                 .iter()

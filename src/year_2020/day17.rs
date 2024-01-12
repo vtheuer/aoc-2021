@@ -1,11 +1,11 @@
 use std::hash::Hash;
 
-use fnv::FnvHashSet;
+use ahash::AHashSet;
 
 use crate::day::Day;
 
 pub struct Day17 {
-    space: FnvHashSet<(i8, i8)>,
+    space: AHashSet<(i8, i8)>,
 }
 
 fn adjacent(n: i8) -> impl Iterator<Item = i8> {
@@ -20,7 +20,7 @@ fn neighbors_4d(&(x, y, z, w): &(i8, i8, i8, i8)) -> impl Iterator<Item = (i8, i
     adjacent(w).flat_map(move |nw| neighbors_3d(&(x, y, z)).map(move |(nx, ny, nz)| (nx, ny, nz, nw)))
 }
 
-fn run<T, F, I>(mut space: FnvHashSet<T>, neighbors: F) -> usize
+fn run<T, F, I>(mut space: AHashSet<T>, neighbors: F) -> usize
 where
     T: Clone + Eq + Hash + Copy,
     F: Fn(&T) -> I,
@@ -30,7 +30,7 @@ where
         space = space
             .iter()
             .flat_map(|cell| neighbors(cell))
-            .collect::<FnvHashSet<_>>()
+            .collect::<AHashSet<_>>()
             .into_iter()
             .filter(|&cell| {
                 let active_neighbors = neighbors(&cell)

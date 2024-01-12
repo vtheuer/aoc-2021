@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 use std::hash::{Hash, Hasher};
 
-use fnv::{FnvHasher, FnvHashSet};
+use ahash::{AHashSet, AHasher};
 
 use crate::day::Day;
 
@@ -27,11 +27,12 @@ fn score(winner: &VecDeque<u8>) -> usize {
         .map(|(i, &card)| card as usize * (i + 1))
         .sum::<usize>()
 }
+
 fn recursive_combat(mut a: VecDeque<u8>, mut b: VecDeque<u8>) -> (bool, VecDeque<u8>) {
-    let mut known_decks = FnvHashSet::default();
+    let mut known_decks = AHashSet::default();
 
     loop {
-        let mut hasher = FnvHasher::default();
+        let mut hasher = AHasher::default();
         a.hash(&mut hasher);
         b.hash(&mut hasher);
         if !known_decks.insert(hasher.finish()) {

@@ -1,4 +1,4 @@
-use fnv::FnvHashMap;
+use ahash::AHashMap;
 
 use crate::day::Day;
 
@@ -9,13 +9,13 @@ struct Record {
 
 impl Record {
     fn count(&self) -> usize {
-        let mut cache: FnvHashMap<(usize, usize, usize, bool), usize> = FnvHashMap::default();
+        let mut cache: AHashMap<(usize, usize, usize, bool), usize> = AHashMap::default();
         self.count_rec(&mut cache, 0, 0, 0, false)
     }
 
     fn count_rec(
         &self,
-        cache: &mut FnvHashMap<(usize, usize, usize, bool), usize>,
+        cache: &mut AHashMap<(usize, usize, usize, bool), usize>,
         spring_index: usize,
         current_length: usize,
         length_index: usize,

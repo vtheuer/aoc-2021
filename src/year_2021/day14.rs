@@ -1,17 +1,17 @@
-use fnv::FnvHashMap;
+use ahash::AHashMap;
 
 use crate::day::Day;
 
 pub struct Day14 {
-    start: FnvHashMap<(u8, u8), usize>,
-    pairs: FnvHashMap<(u8, u8), u8>,
+    start: AHashMap<(u8, u8), usize>,
+    pairs: AHashMap<(u8, u8), u8>,
 }
 
 impl Day14 {
     fn solve(&self, steps: usize) -> usize {
         let atom_counts = (0..steps)
             .fold(self.start.clone(), |counts, _| {
-                counts.iter().fold(FnvHashMap::default(), |mut nc, (&(a, b), &n)| {
+                counts.iter().fold(AHashMap::default(), |mut nc, (&(a, b), &n)| {
                     let c = self.pairs[&(a, b)];
                     *nc.entry((a, c)).or_insert(0) += n;
                     *nc.entry((c, b)).or_insert(0) += n;
@@ -19,7 +19,7 @@ impl Day14 {
                 })
             })
             .into_iter()
-            .fold(FnvHashMap::default(), |mut atom_counts, ((a, b), n)| {
+            .fold(AHashMap::default(), |mut atom_counts, ((a, b), n)| {
                 *atom_counts.entry(a).or_insert(0) += n;
                 *atom_counts.entry(b).or_insert(0) += n;
                 atom_counts
@@ -36,7 +36,7 @@ impl Day<'_> for Day14 {
     fn new(input: &str) -> Self {
         let (start, pairs) = input.split_once("\n\n").unwrap();
         Self {
-            start: start.as_bytes().windows(2).fold(FnvHashMap::default(), |mut start, w| {
+            start: start.as_bytes().windows(2).fold(AHashMap::default(), |mut start, w| {
                 *start.entry((w[0], w[1])).or_insert(0) += 1;
                 start
             }),

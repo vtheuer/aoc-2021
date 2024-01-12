@@ -1,8 +1,8 @@
 use std::cell::Cell;
 
-use fnv::FnvHashSet;
 use num::Integer;
 
+use ahash::AHashSet;
 use Direction::*;
 use Pipe::*;
 
@@ -147,7 +147,7 @@ impl Day<'_> for Day10 {
             (usize::MAX, 0, usize::MAX, 0),
             |(min_x, max_x, min_y, max_y), &(x, y)| (min_x.min(x), max_x.max(x), min_y.min(y), max_y.max(y)),
         );
-        let path_set = FnvHashSet::from_iter(path.iter().copied());
+        let path_set = AHashSet::from_iter(path.iter().copied());
 
         (min_y..=max_y)
             .map(|y| {
