@@ -1,5 +1,7 @@
-use num::Num;
 use std::ops::{Add, Sub};
+
+use num::{one, Num};
+
 use Direction::*;
 
 #[derive(Ord, PartialOrd, Eq, PartialEq, Copy, Clone, Hash, Debug)]
@@ -42,12 +44,30 @@ impl Direction {
     where
         T: Num + Sub<Output = T> + Add<Output = T>,
     {
-        let one = num::one();
+        let one = one();
         match self {
             Up => (x, y - one),
             Right => (x + one, y),
             Down => (x, y + one),
             Left => (x - one, y),
         }
+    }
+
+    pub fn times(&self, n: isize) -> (isize, isize) {
+        match self {
+            Up => (0, -n),
+            Right => (n, 0),
+            Down => (0, n),
+            Left => (-n, 0),
+        }
+    }
+
+    pub fn apply_n(&self, (x, y): (isize, isize), n: isize) -> (isize, isize) {
+        let (dx, dy) = self.times(n);
+        (x + dx, y + dy)
+    }
+
+    pub fn delta(&self) -> (isize, isize) {
+        self.times(1)
     }
 }
