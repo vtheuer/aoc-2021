@@ -51,6 +51,26 @@ impl<T> Grid<T> {
         }
     }
 
+    pub fn get_next(&self, (x, y): (usize, usize), (dx, dy): (isize, isize)) -> Option<T>
+    where
+        T: Copy,
+    {
+        if let Some(next) = x
+            .checked_add_signed(dx)
+            .filter(|&nx| nx < self.width)
+            .and_then(|nx| {
+                y.checked_add_signed(dy)
+                    .filter(|&ny| ny < self.height)
+                    .map(|ny| (nx, ny))
+            })
+            .filter(|&n| self.ucontains(n))
+        {
+            Some(self[next])
+        } else {
+            None
+        }
+    }
+
     pub fn next_index(&self, (x, y): (usize, usize), direction: Direction) -> Option<(usize, usize)> {
         let n = direction.apply((x as isize, y as isize));
 
@@ -79,6 +99,10 @@ impl<T> Grid<T> {
 
     pub fn values(&self) -> impl Iterator<Item = &T> {
         self.rows().flat_map(|row| row.iter())
+    }
+
+    pub fn indices(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
+        (0..self.width).flat_map(|x| (0..self.height).map(move |y| (x, y)))
     }
 }
 
