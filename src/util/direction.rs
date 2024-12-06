@@ -13,6 +13,16 @@ pub enum Direction {
 }
 
 impl Direction {
+    pub fn parse(c: u8) -> Self {
+        match c {
+            b'^' => Up,
+            b'>' => Right,
+            b'v' => Down,
+            b'<' => Left,
+            _ => panic!("{} cannot be parsed to a Direction", c),
+        }
+    }
+
     pub fn opposite(&self) -> Self {
         match self {
             Up => Down,
