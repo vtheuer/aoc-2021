@@ -1,7 +1,6 @@
 use crate::day::Day;
 use crate::util::direction::Direction;
 use crate::util::grid::Grid;
-use crate::util::Joinable;
 
 pub struct Day06 {
     grid: Grid<bool>,
@@ -31,41 +30,41 @@ impl Day<'_> for Day06 {
         let (mut x, mut y) = self.position;
         let mut direction = self.direction;
         let mut visited = vec![vec![None; self.grid.width]; self.grid.height];
+        visited[y][x] = Some(direction);
 
-        while visited[y][x] != Some(direction) {
+        while let Some((nx, ny)) = self.grid.next_index((x, y), direction) {
+            if self.grid[(nx, ny)] {
+                direction = direction.turn_right();
+            } else {
+                (x, y) = (nx, ny);
+            }
             visited[y][x] = Some(direction);
 
-            if let Some((nx, ny)) = self.grid.next_index((x, y), direction).filter(|&n| !self.grid[n]) {
-                (x, y) = (nx, ny);
-            } else {
-                direction = direction.turn_right();
-            }
-
-            println!(
-                "{}\n",
-                visited
-                    .iter()
-                    .enumerate()
-                    .map(|(py, row)| row
-                        .iter()
-                        .enumerate()
-                        .map(|(px, v)| if v.is_some() {
-                            'X'
-                        } else if (x, y) == (px, py) {
-                            match direction {
-                                Direction::Up => '^',
-                                Direction::Right => '>',
-                                Direction::Down => 'v',
-                                Direction::Left => '<',
-                            }
-                        } else if self.grid[(px, py)] {
-                            '#'
-                        } else {
-                            '.'
-                        })
-                        .collect::<String>())
-                    .join("\n")
-            );
+            // println!(
+            //     "{}\n",
+            //     visited
+            //         .iter()
+            //         .enumerate()
+            //         .map(|(py, row)| row
+            //             .iter()
+            //             .enumerate()
+            //             .map(|(px, v)| if v.is_some() {
+            //                 'X'
+            //             } else if (x, y) == (px, py) {
+            //                 match direction {
+            //                     Direction::Up => '^',
+            //                     Direction::Right => '>',
+            //                     Direction::Down => 'v',
+            //                     Direction::Left => '<',
+            //                 }
+            //             } else if self.grid[(px, py)] {
+            //                 '#'
+            //             } else {
+            //                 '.'
+            //             })
+            //             .collect::<String>())
+            //         .join("\n")
+            // );
         }
 
         visited
