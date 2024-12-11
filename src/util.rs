@@ -116,3 +116,7 @@ where
 pub fn first_line(s: &str) -> &str {
     s.lines().next().unwrap()
 }
+
+pub fn count_digits(n: usize) -> u32 {
+    n.checked_ilog10().unwrap_or(0) + 1
+}

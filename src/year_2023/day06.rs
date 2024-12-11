@@ -1,4 +1,5 @@
 use crate::day::Day;
+use crate::util::count_digits;
 
 pub struct Day06 {
     races: Vec<(usize, usize)>,
@@ -11,10 +12,6 @@ fn number_of_better_distances(time: f64, distance: f64) -> usize {
     let x2 = (time + discriminant) / 2.0;
     let x1_ceil = x1.ceil();
     (x2.ceil() - if x1 == x1_ceil { x1_ceil + 1.0 } else { x1_ceil }) as usize
-}
-
-fn count_digits(n: usize) -> u32 {
-    n.checked_ilog10().unwrap_or(0) + 1
 }
 
 impl Day<'_> for Day06 {
