@@ -1,6 +1,9 @@
+use std::fmt;
+use std::fmt::{Display, Formatter};
 use std::ops::{Index, IndexMut};
 
 use crate::util::direction::Direction;
+use crate::util::Joinable;
 
 pub struct Grid<T> {
     grid: Vec<Vec<T>>,
@@ -103,6 +106,27 @@ impl<T> Grid<T> {
 
     pub fn indices(&self) -> impl Iterator<Item = (usize, usize)> + '_ {
         (0..self.width).flat_map(|x| (0..self.height).map(move |y| (x, y)))
+    }
+
+    pub fn format<R: Display>(&self, format_element: fn(&T) -> R) -> String {
+        self.rows()
+            .map(|row| row.iter().map(|e| format_element(e).to_string()).join(""))
+            .join("\n")
+    }
+}
+
+impl<T> Display for Grid<T>
+where
+    T: Display,
+{
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), fmt::Error> {
+        for row in self.rows() {
+            for e in row {
+                write!(f, "{}", e)?;
+            }
+            writeln!(f)?;
+        }
+        Ok(())
     }
 }
 
