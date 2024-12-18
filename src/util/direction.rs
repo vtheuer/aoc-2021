@@ -19,7 +19,7 @@ impl Direction {
             b'>' => Right,
             b'v' => Down,
             b'<' => Left,
-            _ => panic!("{} cannot be parsed to a Direction", c),
+            _ => panic!("{} cannot be parsed to a Direction", c as char),
         }
     }
 
