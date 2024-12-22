@@ -29,6 +29,10 @@ impl<T> Grid<T> {
         Self::new(vec![vec![v; width]; height])
     }
 
+    pub fn init_with(width: usize, height: usize, v: fn() -> T) -> Self {
+        Self::new((0..height).map(|_| (0..width).map(|_| v()).collect()).collect())
+    }
+
     fn ucontains(&self, (x, y): (usize, usize)) -> bool {
         x < self.width && y < self.height
     }
@@ -143,10 +147,7 @@ where
     }
 }
 
-impl<T> Index<(usize, usize)> for Grid<T>
-where
-    T: Copy,
-{
+impl<T> Index<(usize, usize)> for Grid<T> {
     type Output = T;
 
     fn index(&self, (x, y): (usize, usize)) -> &Self::Output {
@@ -154,10 +155,7 @@ where
     }
 }
 
-impl<T> IndexMut<(usize, usize)> for Grid<T>
-where
-    T: Copy,
-{
+impl<T> IndexMut<(usize, usize)> for Grid<T> {
     fn index_mut(&mut self, (x, y): (usize, usize)) -> &mut Self::Output {
         &mut self.grid[y][x]
     }

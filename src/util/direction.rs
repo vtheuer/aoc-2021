@@ -80,4 +80,13 @@ impl Direction {
     pub fn delta(&self) -> (isize, isize) {
         self.times(1)
     }
+
+    pub fn ordinal(&self) -> usize {
+        match self {
+            Up => 0,
+            Right => 1,
+            Down => 2,
+            Left => 3,
+        }
+    }
 }
