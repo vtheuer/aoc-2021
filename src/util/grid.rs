@@ -112,9 +112,15 @@ impl<T> Grid<T> {
         (0..self.width).flat_map(|x| (0..self.height).map(move |y| (x, y)))
     }
 
-    pub fn format<R: Display>(&self, format_element: fn(&T) -> R) -> String {
+    pub fn format<R: Display>(&self, format_element: impl Fn((usize, usize), &T) -> R) -> String {
         self.rows()
-            .map(|row| row.iter().map(|e| format_element(e).to_string()).join(""))
+            .enumerate()
+            .map(|(y, row)| {
+                row.iter()
+                    .enumerate()
+                    .map(|(x, e)| format_element((x, y), e).to_string())
+                    .join("")
+            })
             .join("\n")
     }
 }
