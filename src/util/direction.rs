@@ -12,6 +12,8 @@ pub enum Direction {
     Left,
 }
 
+const VALUES: [Direction; 4] = [Up, Right, Down, Left];
+
 impl Direction {
     pub fn parse(c: u8) -> Self {
         match c {
@@ -20,6 +22,15 @@ impl Direction {
             b'v' => Down,
             b'<' => Left,
             _ => panic!("{} cannot be parsed to a Direction", c as char),
+        }
+    }
+
+    pub fn to_char(&self) -> char {
+        match self {
+            Up => '^',
+            Right => '>',
+            Down => 'v',
+            Left => '<',
         }
     }
 
@@ -88,5 +99,9 @@ impl Direction {
             Down => 2,
             Left => 3,
         }
+    }
+
+    pub fn from_ordinal(o: usize) -> Direction {
+        VALUES[o]
     }
 }
